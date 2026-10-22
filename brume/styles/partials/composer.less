@@ -7,7 +7,8 @@
 // - rayons concentriques : plateau 14pt, boutons 10pt (4pt de marge), sur l'échelle
 //   de rayons du thème.
 
-@brume-tray: @brume-fill-opaque; // doit rester opaque : la barre flotte sur le texte
+@brume-tray: @brume-fill-opaque; // plateaux opaques : barre d'actions, expéditeur
+@brume-toolbar-bubble: fade(@brume-paper, 95%); // bulle de mise en forme
 @brume-tray-hover: @brume-fill;
 @brume-tray-radius: @brume-radius-l;
 @brume-tray-inset: 4px; // 14 - 4 = 10 : @brume-radius-m pour les boutons
@@ -105,19 +106,73 @@ body.window-type-composer {
 
 //======================== Barre de mise en forme =====================//
 
+// Le plateau épouse ses boutons et se centre dans la colonne du composeur, au lieu de
+// s'étirer sur toute la largeur avec les boutons tassés à gauche.
+//
+// Barre toujours visible au défilement : Mailspring la fait suivre en JavaScript
+// (position absolue recalculée à chaque événement "scroll"). Ces événements arrivent
+// après l'affichage de l'image défilée : la barre part avec le texte puis revient,
+// d'où le sautillement. On confie le suivi au moteur de rendu (position: sticky), et
+// on neutralise les valeurs posées par le script (styles en ligne, d'où !important).
+// Le collant est borné par le corps du message (.RichEditor-root), comme le calcul
+// d'origine : la barre ne déborde jamais sous l'en-tête ni sous la barre d'actions.
+@brume-toolbar-btn: 28px; // 36 - 2 x 4 : plateau de 36pt, boutons concentriques
+
+.RichEditor-root .RichEditor-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+
+  .floating-container {
+    position: relative !important;
+    top: 0 !important;
+  }
+}
+
 .RichEditor-toolbar {
   font-family: @font-family;
   font-size: @font-size-small;
 
+  // Hauteur réservée dès le premier rendu (la barre n'apparaît qu'après 400ms) :
+  // le texte ne descend plus d'un cran à son arrivée.
   .floating-container {
     border-bottom: 0;
-    padding: 6px 16px 4px;
+    padding: 6px 0 4px;
+    background: transparent;
+    min-height: 6px + @brume-toolbar-btn + 2 * @brume-tray-inset + 4px;
   }
 
   .inner {
-    background: @brume-tray;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
+    justify-content: center;
     border-radius: @brume-tray-radius;
     padding: @brume-tray-inset;
+    gap: 2px;
+    // Bulle flottante : verre presque couvrant (le texte qui défile dessous ne doit
+    // pas gêner la lecture des boutons), reflet sur l'arête haute, ombre portée.
+    // Le flou s'ajoute là où le moteur l'applique ; sans lui, la bulle reste lisible.
+    .brume-glass();
+    background-color: @brume-toolbar-bubble;
+    box-shadow: @brume-glass-edge, 0 6px 18px -8px fade(@brume-ink, 22%), 0 1px 3px fade(@brume-ink, 6%);
+  }
+
+  // Boutons du plateau seulement : les menus déroulants (lien, couleur) contiennent
+  // aussi des boutons, qui gardent leur forme.
+  .inner > button,
+  .inner > .link-picker > button {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: @brume-toolbar-btn;
+    min-width: @brume-toolbar-btn;
+    max-width: none;
+    padding: 0 6px;
+  }
+  .inner > button.with-select {
+    padding: 0 4px 0 8px;
     gap: 2px;
   }
 
@@ -173,7 +228,7 @@ body.window-type-composer {
 #message-list .message-item-wrap .message-item-white-wrap.composer-outer-wrap {
   .RichEditor-toolbar .inner,
   &.focused .RichEditor-toolbar .inner {
-    background: @brume-tray;
+    background-color: @brume-toolbar-bubble;
   }
 }
 
@@ -276,6 +331,11 @@ body.window-type-composer {
   }
   .signature-button-dropdown .only-item {
     background: transparent;
+  }
+  // La base retire la marge droite de la corbeille dans le fil : l'icône se décalait
+  // à gauche de sa pastille de survol. Même marge des deux côtés, comme les autres.
+  .composer-action-bar-wrap .btn.btn-toolbar.btn-trash {
+    padding: 0 8px;
   }
   &.focused {
     background: @brume-paper;

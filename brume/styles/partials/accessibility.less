@@ -9,7 +9,9 @@
   .button-dropdown.open.open-up .secondary-items,
   .button-dropdown.open.open-down .secondary-items,
   .thread-search-bar .suggestions,
-  .RichEditor-toolbar .dropdown {
+  .RichEditor-toolbar .dropdown,
+  .RichEditor-toolbar .inner,
+  #message-list .message-item-wrap .message-item-white-wrap.composer-outer-wrap .RichEditor-toolbar .inner {
     background-color: @brume-glass-fill-solid;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -31,7 +33,9 @@
 
 // "Réduire les animations"
 @media (prefers-reduced-motion: reduce) {
-  .fixed-popover-container.popout {
+  .fixed-popover-container.popout,
+  body .column-RootSidebar .sidebar-activity > *,
+  body .account-sidebar .sidebar-activity > * {
     animation: none;
   }
   .list-container .list-item::before,

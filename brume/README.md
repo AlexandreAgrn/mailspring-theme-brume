@@ -20,7 +20,7 @@ Pour itérer : modifier les fichiers copiés dans `~/Library/Application Support
 | Rayons concentriques | Échelle unique 6 / 8 / 10 / 14 / 20pt + capsule ; rayon intérieur = rayon extérieur - marge (calque 14, marge 6, pastille 8 ; plateau 14, marge 4, bouton 10). |
 | Contenu jusqu'au bord, pas de séparateurs durs | Chaque segment de la barre d'outils prend la teinte de sa colonne ; plus de filet sous la barre. |
 | Contrôles en capsule | Boutons, recherche, jetons, bouton Envoyer, expéditeur du composeur, interrupteurs, toast "annuler". |
-| Barres d'outils flottantes | Composeur : mise en forme dans un plateau arrondi, actions dans une capsule posée en bas. |
+| Barres d'outils flottantes | Composeur : mise en forme dans une bulle qui reste visible au défilement (sans sautillement), actions dans une capsule posée en bas. |
 | Boutons de fenêtre centrés | Centrés sur l'axe de la barre d'outils, marge gauche égale à la marge verticale (16pt). |
 | Accent rare | Pervenche, réservé à la sélection, au bouton principal et aux liens. |
 | Réglages d'accessibilité prioritaires | Réduire la transparence, réduire les animations, augmenter le contraste. |
@@ -31,6 +31,7 @@ Pour itérer : modifier les fichiers copiés dans `~/Library/Application Support
 |---|---|---|
 | Texte | `#1f2230` | 15,8:1 sur blanc |
 | Texte secondaire | encre à 72% | 5,9:1 |
+| Texte tertiaire, icônes | encre à 64% | 4,5:1 sur toutes les surfaces claires |
 | Accent (encre) | `#5558c8` | 5,8:1 sur blanc |
 | Surface chrome | `#f2f1f8` | |
 | Contenu | `#ffffff` | |
@@ -54,17 +55,19 @@ Toutes les règles (`styles/partials/`) n'utilisent que des jetons définis dans
 | Famille | Jetons |
 |---|---|
 | Palette | `@brume-ink`, `@brume-canvas`, `@brume-paper`, `@brume-mist`, `@brume-accent`, `@brume-accent-ink`, `@brume-on-accent`, encres pastel (`@brume-sage`, `@brume-rose`...) |
-| Neutres | `@brume-fill-subtle` (4%), `@brume-fill` (6%), `@brume-fill-opaque`, `@brume-hairline` (8%), `@brume-hairline-strong` (14%), `@brume-icon` (58%), `@brume-control-border` (30%), `@brume-scroll` |
+| Neutres | `@brume-fill-subtle` (4%), `@brume-fill` (6%), `@brume-fill-opaque`, `-opaque-strong`, `-opaque-pressed`, `@brume-hairline` (8%), `@brume-hairline-strong` (14%), `@brume-icon` (64%), `@brume-control-border` (30%), `@brume-scroll` |
 | Accent dérivé | `@brume-accent-soft`, `@brume-accent-softer`, `@brume-accent-sidebar`, `@brume-accent-ring` (calculés à l'exécution depuis `--brume-accent`) |
 | Rayons | `@brume-radius-xs` 6, `-s` 8, `-m` 10, `-l` 14, `-xl` 20, `@brume-capsule` |
 | Ombres | `@brume-ring`, `@brume-card-shadow`, `@brume-card-shadow-down`, `@brume-capsule-edge`, `@brume-glass-*` |
-| Barre latérale | `@brume-sidebar-*` (fond, texte, icônes, compteurs, survol, sélection, glisser-déposer), `@brume-toolbar-bg`, `@brume-compose-*` |
+| Barre latérale | `@brume-sidebar-*` (fond, texte, icônes, compteurs, survol, sélection, glisser-déposer, carte d'activité, roue de progression, alerte hors ligne), `@brume-toolbar-bg`, `@brume-compose-*` |
 | Menus | `@brume-menu-selected-bg`, `-text`, `-secondary` |
 | Dimensions | `@brume-sidebar-gutter` 16, `-pill-inset` 8, `-row-height` 32, bornes de largeur, hauteurs de lignes de la liste |
 
 ## Structure
 
 ```
+lib/
+  main.js                  désélection au clic (seul comportement qui demande du code)
 styles/
   ui-variables.less        jetons uniquement (importé par tout Mailspring)
   theme-colors.less        couleurs de l'aperçu dans le sélecteur de thèmes
@@ -82,6 +85,10 @@ styles/
                            reporter, interrupteurs, préférences, calendrier
     accessibility.less     préférences système
 ```
+
+## Comportement
+
+Un clic dans la zone vide de la liste ferme le message ouvert et décoche la sélection ; un clic ailleurs dans la fenêtre retire le cadre du curseur clavier. Mailspring ne gère pas ces clics : c'est le seul comportement du thème qui passe par du code (`lib/main.js`, chargé à l'activation du thème et retiré quand on en change).
 
 ## Limites connues
 

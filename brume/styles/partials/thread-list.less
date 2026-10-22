@@ -220,6 +220,22 @@ body.is-blurred .list-container .list-item {
   background-repeat: no-repeat;
 }
 
+// Survol de l'icône d'état (point "non lu", répondu, transféré, vide) : une étoile grise
+// annonce l'action du clic (suivre le fil). La règle du point "non lu" ci-dessus
+// masquait l'étoile prévue par la base. L'étoile est un masque teinté : même gris que
+// les icônes du thème, plus soutenu sous le pointeur que la base (#d9d9d7, trop pâle
+// sur une pastille de survol).
+.thread-list .list-container .list-item .thread-icon.thread-icon-star-on-hover:hover,
+.draft-list .list-container .list-item .thread-icon.thread-icon-star-on-hover:hover {
+  background-image: none;
+  background-color: @brume-icon;
+  -webkit-mask-image: url(images/thread-list/icon-star-@2x.png);
+  -webkit-mask-position: center;
+  -webkit-mask-size: 16px 16px;
+  -webkit-mask-repeat: no-repeat;
+  cursor: default;
+}
+
 // Icônes passées en blanc par les modules sur les lignes sélectionnées : la sélection
 // est pastel, on leur rend leur couleur.
 .list-item.focused,

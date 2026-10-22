@@ -38,13 +38,178 @@
   color: @brume-sidebar-text;
 }
 
-// Activité de synchronisation, en bas de la barre latérale.
-.sidebar-activity {
-  background: @brume-sidebar-bg;
+// Activité de synchronisation ("Checking for mail", envois, détail par dossier).
+// Au lieu d'un bandeau collé en bas avec trois points clignotants : une carte posée
+// dans la barre latérale (marge des pastilles, 8pt), une roue de progression fine à
+// l'accent, et "Hide" en petite capsule (la base en fait un lien, à la couleur des
+// liens : corail profond, trop sombre sur l'ardoise).
+@brume-activity-spinner: 12px;
+
+@keyframes brume-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes brume-activity-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.brume-activity-line() {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: @font-weight-medium;
+
+  &::before {
+    content: '';
+    flex: 0 0 auto;
+    width: @brume-activity-spinner;
+    height: @brume-activity-spinner;
+    border-radius: 50%;
+    border: 1.5px solid @brume-sidebar-spinner-track;
+    border-top-color: @brume-sidebar-spinner;
+    animation: brume-spin 0.8s linear infinite;
+  }
+
+  // Les points de suspension animés font doublon avec la roue.
+  .ellipsis1,
+  .ellipsis2,
+  .ellipsis3 {
+    display: none;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    margin-left: 4px;
+    padding: 0 8px !important; // la base pose un padding-left en style en ligne
+    border-radius: @brume-capsule;
+    background: @brume-sidebar-hover;
+    color: @brume-sidebar-text;
+    font-size: @font-size-smaller;
+    font-weight: @font-weight-medium;
+    text-decoration: none;
+    transition: background 120ms ease-out, color 120ms ease-out;
+    &:hover {
+      background: @brume-sidebar-selected-bg;
+      color: @brume-sidebar-strong;
+    }
+  }
+}
+
+// Indicateur "hors ligne" (sous la liste des dossiers) : la base lui donne les gris et la
+// couleur de lien des surfaces claires, illisibles sur l'ardoise. Pastille d'alerte,
+// libellé au ton de la barre, "Try now" en petite capsule comme "Hide".
+body .column-RootSidebar .offline-indicator {
+  margin: 0 @brume-sidebar-gutter 8px;
   color: @brume-sidebar-text;
-  box-shadow: inset 0 1px 0 @brume-sidebar-hairline;
+  .offline-indicator-dot {
+    background-color: @brume-sidebar-warning;
+  }
+  .offline-indicator-retry {
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: @brume-capsule;
+    background: @brume-sidebar-hover;
+    color: @brume-sidebar-text;
+    font-weight: @font-weight-medium;
+    transition: background 120ms ease-out, color 120ms ease-out;
+    &:hover {
+      background: @brume-sidebar-selected-bg;
+      color: @brume-sidebar-strong;
+    }
+  }
+}
+
+// Préfixe `body .column-RootSidebar` : priorité supérieure aux règles de Mailspring
+// (`.sidebar-activity`, `.sidebar-activity .item .inner`...), quel que soit l'ordre de
+// chargement des feuilles.
+body .column-RootSidebar .sidebar-activity,
+body .account-sidebar .sidebar-activity {
+  width: auto;
+  margin: 0 @brume-sidebar-pill-inset @brume-sidebar-pill-inset;
+  border-radius: @brume-radius-l;
+  background: @brume-sidebar-card-bg;
+  box-shadow: @brume-sidebar-card-edge;
+  color: @brume-sidebar-text;
+  overflow: hidden;
+
+  // Rien à afficher : pas de carte vide.
+  &:empty {
+    display: none;
+  }
+
+  // Blocs successifs (envois en cours, export, synchronisation) : un filet entre eux.
+  > * {
+    animation: brume-activity-in 220ms cubic-bezier(0.2, 0.9, 0.3, 1);
+    & + * {
+      border-top: 1px solid @brume-sidebar-hairline;
+    }
+  }
+
   .item .inner {
-    border-bottom-color: @brume-sidebar-hairline;
+    border-bottom: 0;
+    padding: 9px 12px;
+  }
+
+  // Lignes de premier niveau (synchronisation, envois) : roue, libellé, compteur ou
+  // "Hide". L'export garde sa barre de progression sous le libellé : pas de roue.
+  // Deux règles distinctes : un sélecteur refusé dans une liste annule toute la liste,
+  // la ligne principale ne doit donc pas dépendre de :has().
+  > .item > .inner {
+    .brume-activity-line();
+  }
+  > div > .item > .inner:not(:has(div)) {
+    .brume-activity-line();
+  }
+
+  // Textes secondaires de la carte : couleur du texte courant, en plus petit. Le ton
+  // "intitulé" passe sur la barre, pas sur la carte d'Ardoise, un peu plus claire.
+  .item .count {
+    order: 2;
+    margin-left: auto;
+    color: @brume-sidebar-text;
+    font-weight: @font-weight-normal;
+    font-variant-numeric: tabular-nums;
+  }
+
+  // Détail par compte et par dossier.
+  .item .sync-activity {
+    max-height: 50vh;
+    overflow-y: auto;
+    border-top: 1px solid @brume-sidebar-hairline;
+
+    .account {
+      padding: 8px 12px 10px;
+      border-bottom: 0;
+      & + .account {
+        border-top: 1px solid @brume-sidebar-hairline;
+      }
+    }
+    h2 {
+      margin: 0 0 4px;
+      color: @brume-sidebar-strong;
+      font-size: @font-size-small;
+      font-weight: @font-weight-semi-bold;
+    }
+    .account .folder-progress {
+      margin: 2px 0;
+      color: @brume-sidebar-text;
+      .progress-label {
+        color: @brume-sidebar-text;
+        opacity: 1;
+      }
+    }
   }
 }
 

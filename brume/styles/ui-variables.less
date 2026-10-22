@@ -30,6 +30,7 @@
 // Encres pastel (AA sur blanc) et aplats associés.
 @brume-sage: #2e7a55;
 @brume-sage-soft: #dcefe3;
+@brume-sage-strong: darken(@brume-sage, 7%); // texte sauge sur @brume-sage-soft (AA)
 @brume-peach: #a2561f;
 @brume-peach-soft: #fbe5d4;
 @brume-rose: #b13a4e;
@@ -72,8 +73,9 @@
 @brume-fill: fade(@brume-ink, 6%); // appui, contrôles segmentés
 @brume-fill-opaque: mix(@brume-ink, @brume-paper, 4%); // aplats opaques : survol de ligne, plateaux
 @brume-fill-opaque-strong: mix(@brume-ink, @brume-paper, 7%);
+@brume-fill-opaque-pressed: mix(@brume-ink, @brume-paper, 11%); // appui sur un aplat opaque
 @brume-paper-dim: #fcfcfe; // carte repliée, survol de la zone de réponse
-@brume-icon: fade(@brume-ink, 58%); // icônes et libellés tertiaires (3,6:1)
+@brume-icon: fade(@brume-ink, 64%); // icônes et libellés tertiaires (4,5:1 sur toutes les surfaces claires)
 @brume-control-border: fade(@brume-ink, 30%); // cases à cocher, pastilles de couleur
 @brume-control-border-hover: fade(@brume-ink, 45%);
 @brume-scroll: fade(@brume-ink, 22%);
@@ -108,6 +110,13 @@
 @brume-sidebar-scroll: @brume-scroll;
 @brume-sidebar-scroll-hover: @brume-scroll-hover;
 @brume-sidebar-gumdrop-blurred: fade(@brume-ink, 15%); // boutons de fenêtre, fenêtre inactive
+// Carte d'activité (synchronisation) posée en bas de la barre latérale.
+@brume-sidebar-card-bg: @brume-paper;
+@brume-sidebar-card-edge: @brume-card-shadow;
+@brume-sidebar-spinner-track: @brume-hairline-strong;
+@brume-sidebar-spinner: @accent-primary;
+@brume-sidebar-warning: @brume-peach; // pastille "hors ligne"
+
 
 // Bouton "Nouveau message" : seule capsule teintée de la barre d'outils.
 @brume-compose-bg: @brume-accent-soft;
@@ -171,7 +180,7 @@
 // Typographie
 @text-color: @brume-ink;
 @text-color-subtle: fade(@brume-ink, 72%); // 5,9:1, AA
-@text-color-very-subtle: fade(@brume-ink, 46%); // décoratif : compteurs, intitulés
+@text-color-very-subtle: fade(@brume-ink, 64%); // compteurs, intitulés, adresses : 4,5:1 (AA) sur blanc, brume et lavande
 @text-color-inverse: #ffffff;
 @text-color-inverse-subtle: fade(#ffffff, 82%);
 @text-color-inverse-very-subtle: fade(#ffffff, 60%);

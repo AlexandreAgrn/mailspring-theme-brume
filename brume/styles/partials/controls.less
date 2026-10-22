@@ -109,3 +109,44 @@ body.is-blurred .toolbar-ThreadList .thread-search-bar {
   background: @brume-fill-subtle;
   box-shadow: none;
 }
+
+// Listes déroulantes natives (<select>) : pastille arrondie remplie, chevron dessiné,
+// anneau de focus du thème. La base les laisse rectangulaires, cerclées d'un trait, et
+// le contour de focus suivait cet angle droit. Les listes de la barre de mise en forme
+// du composeur (police, taille) restent des boutons nus.
+select:not(.RichEditor-toolbar select) {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 28px;
+  padding: 0 28px 0 10px;
+  border: 0;
+  border-radius: @brume-radius-s;
+  background-color: @brume-paper;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10' fill='none' stroke='%231f2230' stroke-opacity='0.64' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 3.8 5 6.8 8 3.8'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px 10px;
+  box-shadow: @brume-capsule-edge;
+  color: @text-color;
+  font-family: @font-family;
+  line-height: 28px;
+  transition: box-shadow 120ms ease-out, background-color 120ms ease-out;
+
+  &:hover:not(:disabled) {
+    background-color: @brume-fill-opaque;
+  }
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 1px color-mix(in oklab, @brume-accent-var 55%, transparent),
+      0 0 0 4px @brume-accent-ring;
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
+  &[multiple] {
+    height: auto;
+    padding: 4px;
+    background-image: none;
+  }
+}

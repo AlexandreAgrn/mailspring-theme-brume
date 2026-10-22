@@ -56,6 +56,212 @@
 
   .message-header {
     padding-top: @brume-card-padding;
+
+    // Expéditeur : nom plus présent que le reste de l'en-tête, adresse en retrait.
+    .from-contact {
+      font-size: @font-size-base;
+      font-weight: @font-weight-semi-bold;
+      letter-spacing: -0.1px;
+      color: @brume-ink;
+    }
+    // Adresse de l'expéditeur (en-tête détaillé) : en retrait et sans chevrons. Les
+    // chevrons sont du texte brut autour de l'adresse : on les efface en annulant la
+    // taille de police du bloc, puis on la rend à l'adresse seule.
+    .from-participants .expanded-participants .from-contact {
+      .participant-primary {
+        color: @brume-ink;
+        margin-right: 6px;
+      }
+      .participant-secondary {
+        font-size: 0;
+        font-weight: @font-weight-normal;
+        letter-spacing: 0;
+        span {
+          font-size: @font-size-small;
+          color: @text-color-very-subtle;
+        }
+      }
+    }
+
+    // Date de réception : chiffres tabulaires (les heures ne dansent pas d'un message à
+    // l'autre), ton tertiaire, le titre au survol garde la date complète.
+    .message-time {
+      min-width: 0;
+      margin-right: 8px;
+      color: @brume-icon;
+      font-size: @font-size-small;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.1px;
+    }
+    // Afficher / masquer le détail : chevron fin dessiné en masque (l'image d'origine
+    // est un triangle plein), toujours visible, en tête de la colonne de contenu ;
+    // le nom, les destinataires et la fiche se décalent d'autant (@brume-detail-indent).
+    // Fermé : gris, vers la droite. Ouvert : accent, vers le bas. Pastille au survol.
+    // Position et affichage sont posés en style en ligne ou par des règles plus
+    // fortes de la base, d'où les !important.
+    .header-toggle-control {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      top: 21px !important;
+      left: -1px !important;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: transparent;
+      opacity: 1;
+      cursor: default;
+      transition: background 120ms ease-out;
+
+      img {
+        display: none;
+      }
+      &::before {
+        content: '';
+        width: 10px;
+        height: 10px;
+        background-color: @accent-primary;
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.6 1.8 6.8 5 3.6 8.2'/%3E%3C/svg%3E");
+        -webkit-mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        transform: rotate(90deg);
+        transition: transform 180ms cubic-bezier(0.2, 0.9, 0.3, 1), background-color 120ms ease-out;
+      }
+      &:hover {
+        background: @brume-accent-softer;
+      }
+
+      &.inactive {
+        &::before {
+          transform: none;
+          background-color: @brume-icon;
+        }
+        &:hover {
+          background: @brume-fill;
+          &::before {
+            background-color: @brume-ink;
+          }
+        }
+      }
+    }
+
+    // Décalage de l'en-tête derrière le chevron.
+    .message-participants {
+      padding-left: @brume-detail-indent;
+    }
+    .header-row {
+      margin-left: @brume-detail-indent !important;
+    }
+  }
+
+
+  // Icônes de la ligne d'objet (tout déplier, imprimer, ouvrir dans une fenêtre) :
+  // boutons ronds avec survol, comme les autres commandes du thème.
+  .message-icons-wrap {
+    gap: 2px;
+    div + div {
+      margin-left: 0;
+    }
+    > div {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      transition: background 120ms ease-out;
+      &:hover {
+        background: @brume-fill;
+        img {
+          background: @brume-ink;
+        }
+      }
+    }
+  }
+
+  //---------------------- En-tête détaillé (chevron) -----------------------//
+  // Fiche d'informations, façon réglages macOS : une ligne par champ, séparées par
+  // un filet, intitulés discrets dans une colonne à gauche, alignée sur le nom de
+  // l'expéditeur ; pas de bloc gris. Destinataires (À, Cc, Cci, Répondre à), objet
+  // et dossiers. Ce sont des éléments frères sans conteneur commun : chaque ligne
+  // porte son filet.
+  @brume-detail-label: 5.4em;
+  @brume-detail-indent: 26px; // chevron (20pt) + 6pt
+
+  .message-header {
+    // Lignes de la fiche.
+    .message-participants:not(.collapsed):not(.from-participants) .participant-type,
+    .header-row {
+      display: flex;
+      align-items: baseline;
+      margin: 0;
+      padding: 6px 0;
+      border-top: 1px solid @brume-hairline;
+      font-size: @font-size-small;
+      line-height: 18px;
+    }
+    // Écart entre la ligne du nom et la fiche.
+    .message-participants:not(.collapsed):not(.from-participants):has(.participant-type),
+    .message-participants:not(.from-participants):not(:has(.participant-type)) + .header-row {
+      margin-top: 10px;
+    }
+    .message-participants:not(.collapsed):not(.from-participants) {
+      display: block;
+    }
+    .expanded-participants {
+      padding-right: 0;
+    }
+
+    // Colonne des intitulés.
+    .message-participants:not(.collapsed):not(.from-participants) .participant-label,
+    .header-row .header-label {
+      float: none;
+      flex: 0 0 auto;
+      width: @brume-detail-label;
+      margin: 0;
+      padding-right: 8px;
+      color: @brume-icon;
+      font-size: @font-size-smaller;
+      font-weight: @font-weight-medium;
+      text-align: left;
+      text-transform: none;
+      white-space: nowrap;
+    }
+
+    // Valeurs.
+    .message-participants:not(.collapsed):not(.from-participants) .participant-name,
+    .header-row .header-name {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+    .message-participants:not(.collapsed):not(.from-participants) .participant-primary {
+      color: @brume-ink;
+    }
+    .message-participants:not(.collapsed):not(.from-participants) .participant-secondary {
+      color: @text-color-very-subtle;
+    }
+    .header-row .header-name {
+      color: @brume-ink;
+    }
+
+    // Dossiers : étiquettes teintées d'accent au lieu d'une liste à virgules.
+    .message-folder-chip {
+      display: inline-flex;
+      align-items: center;
+      height: 20px;
+      margin: -1px 4px -1px 0;
+      padding: 0 8px;
+      border-radius: @brume-radius-xs;
+      background: @brume-accent-softer;
+      color: @accent-primary;
+      font-size: @font-size-smaller;
+      font-weight: @font-weight-medium;
+      vertical-align: baseline;
+    }
+    .header-row .header-name .message-folder-chip + .message-folder-chip::before {
+      content: none;
+    }
   }
 
   // Zone de réponse : bas de la dernière carte, séparée par un filet continu.

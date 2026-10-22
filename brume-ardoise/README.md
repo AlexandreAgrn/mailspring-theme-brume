@@ -14,7 +14,7 @@ Brume et Brume Ardoise s'installent côte à côte : on bascule de l'un à l'aut
 
 Uniquement des couleurs, toutes redéfinies dans le bloc "Ardoise" à la fin de `styles/ui-variables.less` :
 
-- barre latérale et sa portion de barre d'outils en ardoise `#2f2e42` (Darkside), texte clair, sélection blanche sur pastille translucide, icône sélectionnée et compteurs en corail ;
+- barre latérale et sa portion de barre d'outils en ardoise `#2f2e42` (Darkside), texte clair, sélection blanche sur pastille translucide, icône sélectionnée et compteurs en corail (compteur de la ligne sélectionnée en blanc) ;
 - accent corail : pastel pour les aplats, profond pour le texte sur fond clair ;
 - barre d'outils blanche comme la liste, lecture teintée d'ardoise (`#f5f5f7`) ;
 - menus : sélection en aplat corail doux et texte encre (le corail pastel ne supporte pas le texte blanc).
@@ -27,6 +27,7 @@ Géométrie, typographie, marges, rayons, ombres et comportement sont identiques
 |---|---|---|
 | Barre latérale | `#2f2e42` | |
 | Texte de la barre latérale | `#b9b8cc` | 6,8:1 sur la barre latérale |
+| Intitulés de la barre latérale | `#b9b8cc` à 78% | 4,5:1 sur la barre latérale |
 | Sélection | blanc | 13,2:1 |
 | Corail pastel (aplats) | `#f0937a` | 5,8:1 avec le texte ardoise posé dessus |
 | Corail profond (texte sur clair) | `#b24e37` | 5,2:1 sur blanc |
@@ -39,6 +40,8 @@ Le corail pastel ne porte jamais de texte blanc (2,3:1, illisible) : le bouton E
 - **Largeur de la barre latérale** : `@brume-sidebar-min-width` et `@brume-sidebar-max-width` (200 à 420pt, contre 165 à 250pt d'origine). **Hauteur des lignes** de la liste : `@brume-thread-row-wide` et `@brume-thread-row-narrow`. Mailspring lit ces valeurs au démarrage : il faut le relancer après les avoir changées.
 
 Couleurs : bloc "Ardoise" à la fin de `styles/ui-variables.less`. Le reste des jetons (géométrie, rayons, ombres) est documenté dans le README de Brume.
+
+Le comportement (désélection au clic, `lib/main.js`) est le même que dans Brume.
 
 ## Limites connues
 

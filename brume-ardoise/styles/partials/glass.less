@@ -29,6 +29,58 @@
       width: calc(~'100% - 12px');
       margin: 0 6px;
       border-radius: @brume-radius-s;
+      padding: 5px 12px;
+      line-height: 20px;
+    }
+    .item:not(.active):not(.selected):hover {
+      background-color: @brume-fill;
+    }
+
+    // Titre textuel du menu ("Translate:", "Remind me if no one replies:") : la base le
+    // colle au bord (3px). Intitulé discret, aligné sur le texte des pastilles
+    // (6 de marge + 12 de retrait = 18). Les en-têtes à champ de recherche gardent
+    // leur mise en page.
+    .header-container:not(:has(input)) {
+      padding: 10px 18px 7px;
+      font-size: @font-size-small;
+      font-weight: @font-weight-semi-bold;
+      color: @text-color-very-subtle;
+    }
+
+    // Défilement : poignée fine, écartée des coins arrondis du calque.
+    .content-container {
+      &::-webkit-scrollbar {
+        width: 11px;
+      }
+      &::-webkit-scrollbar-track {
+        margin: 8px 0;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: @brume-scroll;
+        background-clip: padding-box;
+        border: 3px solid transparent;
+        border-radius: @brume-capsule;
+        &:hover {
+          background: @brume-scroll-hover;
+          background-clip: padding-box;
+        }
+      }
+    }
+
+    // Pied des menus de date (rappel, envoi différé, reporter) : filet en retrait et
+    // sections aérées, au lieu de blocs collés au bord.
+    .footer-container {
+      .divider {
+        height: 1px;
+        margin: 6px 12px;
+        background: @brume-hairline;
+      }
+      .section {
+        padding: 6px 12px 10px;
+      }
+      .btn {
+        border-radius: @brume-capsule;
+      }
     }
   }
 }

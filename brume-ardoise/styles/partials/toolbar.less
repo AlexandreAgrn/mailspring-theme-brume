@@ -12,11 +12,17 @@ body.platform-darwin .sheet-toolbar {
     img.content-mask {
       background-color: @text-color-subtle;
     }
+    // Survol : un aplat légèrement plus sombre. L'ancien survol passait au blanc pur,
+    // invisible sur les colonnes blanches (liste des fils, barre de sélection
+    // multiple, toute la barre d'Ardoise).
     &:hover {
-      background: @brume-paper;
+      background: @brume-fill-opaque-strong;
+      img.content-mask {
+        background-color: @brume-ink;
+      }
     }
     &:active {
-      background: @brume-fill;
+      background: @brume-fill-opaque-pressed;
       box-shadow: 0 0 0 0.5px @brume-hairline-strong;
     }
   }
@@ -101,4 +107,83 @@ body.platform-darwin {
 .sheet-toolbar .window-title {
   font-weight: @font-weight-semi-bold;
   color: @brume-ink;
+}
+
+// Barre de sélection multiple (remplace la recherche quand plusieurs fils sont cochés) :
+// même blanc que la colonne, sans les filets verticaux de la base ; libellé discret.
+.sheet-toolbar .selection-bar .absolute {
+  border-left: 0;
+  border-right: 0;
+  background-color: @brume-paper;
+  .inner .centered {
+    color: @text-color-very-subtle;
+    font-size: @font-size-small;
+  }
+}
+
+// Message précédent / suivant : deux boutons nus dans la base, à côté de capsules.
+// Ici, une capsule coupée en deux, comme les groupes de boutons de la barre.
+// Géométrie imposée : selon la version de Mailspring, ces boutons nus héritent de la
+// hauteur de la barre (46pt) au lieu de celle des capsules (30pt).
+body.platform-darwin .sheet-toolbar .message-toolbar-arrow {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  box-sizing: border-box;
+  width: 36px;
+  min-width: 36px;
+  height: @toolbar-btn-height-darwin;
+  min-height: 0;
+  margin-top: ((@toolbar-height-darwin - @toolbar-btn-height-darwin) / 2);
+  padding: 0;
+  line-height: @toolbar-btn-height-darwin;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: fade(@brume-paper, 78%);
+  box-shadow: @brume-capsule-edge;
+  transition: background 140ms ease-out, opacity 140ms ease-out;
+
+  &.down {
+    margin-right: 0;
+    border-radius: @brume-capsule 0 0 @brume-capsule;
+  }
+  &.up {
+    margin-left: 0;
+    border-radius: 0 @brume-capsule @brume-capsule 0;
+  }
+  // Icône : l'image de Mailspring (épaisse, et différente selon les versions) est
+  // masquée ; chevron fin dessiné en masque à la place, même trait que les autres.
+  img {
+    display: none;
+  }
+  &::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background-color: @text-color-subtle;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5'/%3E%3C/svg%3E");
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    transition: background-color 140ms ease-out;
+  }
+  &.up::before {
+    transform: rotate(180deg);
+  }
+  &:not(.disabled):hover,
+  &:not(.disabled):focus-visible {
+    background: @brume-fill-opaque-strong;
+    &::before {
+      background-color: @brume-ink;
+    }
+  }
+  &:not(.disabled):active {
+    background: @brume-fill-opaque-pressed;
+  }
+  &.disabled {
+    opacity: 0.45;
+  }
+}
+// Filet entre les deux moitiés.
+body.platform-darwin .sheet-toolbar .message-toolbar-arrow.up {
+  box-shadow: @brume-capsule-edge, inset 1px 0 0 @brume-hairline;
 }
