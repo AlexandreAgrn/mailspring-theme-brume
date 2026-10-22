@@ -1,0 +1,104 @@
+// Barre d'outils : la base Mailspring dessine déjà des capsules façon macOS 26.
+// On leur donne une vraie matière de verre clair : remplissage blanc translucide,
+// reflet spéculaire en haut, contour d'un demi-pixel, ombre presque nulle.
+// Fenêtre inactive : la base aplatit les capsules, on ne touche pas à cet état.
+
+body.platform-darwin .sheet-toolbar {
+  .btn-toolbar {
+    background: fade(@brume-paper, 78%);
+    box-shadow: @brume-capsule-edge;
+    transition: background 140ms ease-out, box-shadow 140ms ease-out;
+
+    img.content-mask {
+      background-color: @text-color-subtle;
+    }
+    &:hover {
+      background: @brume-paper;
+    }
+    &:active {
+      background: @brume-fill;
+      box-shadow: 0 0 0 0.5px @brume-hairline-strong;
+    }
+  }
+
+  // Groupes : une seule capsule, segments séparés par un filet.
+  .button-group {
+    box-shadow: @brume-capsule-edge;
+    .btn.btn-toolbar {
+      box-shadow: none;
+      &:not(:first-child) {
+        border-left: 1px solid @brume-hairline;
+      }
+    }
+  }
+}
+
+// Fond de la barre d'outils : jeton @brume-toolbar-bg (la base y met la couleur des
+// panneaux), et la portion au-dessus de la barre latérale prend la couleur de celle-ci.
+body .sheet-toolbar-container,
+body.is-blurred .sheet-toolbar-container {
+  background: @brume-toolbar-bg;
+}
+.sheet-toolbar-container .toolbar-RootSidebar {
+  background: @brume-sidebar-bg;
+}
+
+// Bouton "Nouveau message" : seule capsule teintée de la barre, comme une action
+// principale ; placé en miroir des boutons de fenêtre (16pt du bord de la colonne).
+body.platform-darwin .sheet-toolbar .btn-toolbar.item-compose,
+body.platform-darwin.is-blurred .sheet-toolbar-container .btn.btn-toolbar.item-compose {
+  background: @brume-compose-bg;
+  box-shadow: @brume-compose-edge;
+  img.content-mask {
+    background-color: @brume-compose-icon;
+  }
+  &:hover {
+    background: @brume-compose-bg-hover;
+  }
+}
+body.platform-darwin .sheet-toolbar .toolbar-RootSidebar .btn-toolbar.item-compose {
+  margin-left: 0;
+  margin-right: @brume-sidebar-gutter;
+}
+
+// Indicateur d'activité (synchronisation), 12pt avant le bouton de composition.
+.toolbar-RootSidebar .toolbar-activity {
+  margin-right: 12px;
+  img.content-mask {
+    background-color: @brume-sidebar-icon;
+  }
+}
+
+// Boutons de fenêtre (fermer, réduire, plein écran).
+// La base les place avec une marge fixe depuis le haut : selon la hauteur de la barre
+// (46pt dans la fenêtre principale, moins dans les fenêtres secondaires), ils tombent
+// trop bas ou trop haut par rapport aux capsules. On les centre sur l'axe de la barre,
+// comme macOS, et on aligne la marge gauche sur la marge verticale (16pt dans la
+// fenêtre principale) pour un coin équilibré.
+@brume-gumdrop: 14px;
+@brume-gumdrop-gap: 4.5px; // marge propre à chaque bouton, définie par la base
+@brume-gumdrop-inset: ((@toolbar-height-darwin - @brume-gumdrop) / 2);
+
+body.platform-darwin {
+  .toolbar-window-controls {
+    align-self: center;
+    margin: 0 0 0 (@brume-gumdrop-inset - @brume-gumdrop-gap);
+  }
+
+  // Fenêtre inactive : couleur des pastilles lisible sur la barre latérale.
+  &.is-blurred .toolbar-RootSidebar .toolbar-window-controls button {
+    background-color: @brume-sidebar-gumdrop-blurred;
+    box-shadow: none;
+  }
+
+  // Le filet transparent sous la barre laissait voir un trait blanc : on le retire,
+  // la hauteur de la barre est fixée par ailleurs.
+  .sheet-toolbar {
+    border-bottom: 0;
+  }
+}
+
+.sheet-toolbar .window-title {
+  font-weight: @font-weight-semi-bold;
+  color: @brume-ink;
+}

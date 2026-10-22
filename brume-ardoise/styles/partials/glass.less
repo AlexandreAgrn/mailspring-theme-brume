@@ -1,0 +1,124 @@
+// Verre : calques qui flottent au-dessus du contenu (popovers, menus, suggestions).
+// Le flou ne porte que sur le contenu de l'app situé dessous : la fenêtre Mailspring
+// est opaque, le bureau ne transparaît pas.
+
+.brume-glass() {
+  background-color: @brume-glass-fill;
+  -webkit-backdrop-filter: @brume-glass-blur;
+  backdrop-filter: @brume-glass-blur;
+  box-shadow: @brume-glass-edge, @brume-glass-shadow;
+}
+
+// Les conteneurs internes des menus ont leur propre fond opaque : on les rend
+// transparents pour laisser voir le verre (et éviter du verre sur du verre).
+.brume-glass-children() {
+  .menu {
+    .header-container,
+    .content-container,
+    .footer-container {
+      background: transparent;
+    }
+    .header-container {
+      border-bottom: 1px solid @brume-hairline;
+    }
+    .content-container {
+      padding: 6px 0;
+    }
+    // Pastilles insérées : 6px de marge dans un calque de 14px, donc 8px de rayon.
+    .item {
+      width: calc(~'100% - 12px');
+      margin: 0 6px;
+      border-radius: @brume-radius-s;
+    }
+  }
+}
+
+// Popovers (déplacer, étiquettes, reporter, envoi différé, etc.)
+.fixed-popover-container {
+  .fixed-popover {
+    .brume-glass();
+    .brume-glass-children();
+    border-radius: @brume-radius-l;
+  }
+  .fixed-popover-pointer {
+    background-color: @brume-glass-fill;
+    -webkit-backdrop-filter: @brume-glass-blur;
+    backdrop-filter: @brume-glass-blur;
+  }
+  .fixed-popover-pointer.shadow {
+    background-color: fade(@brume-ink, 10%);
+  }
+  // Apparition plus douce que le rebond d'origine.
+  &.popout {
+    animation: brume-popout 220ms cubic-bezier(0.2, 0.9, 0.3, 1.15);
+  }
+}
+
+@keyframes brume-popout {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Listes déroulantes des boutons à choix (Envoyer et ses variantes, etc.)
+// Sélecteurs alignés sur ceux de la base (.open.open-up / .open.open-down) pour
+// les surclasser : le menu flotte, détaché du bouton, au lieu de s'y souder.
+.button-dropdown.open.open-up,
+.button-dropdown.open.open-down {
+  .secondary-items {
+    .brume-glass();
+    border-radius: @brume-radius-l;
+  }
+  .secondary-picker {
+    border-radius: 0 @brume-capsule @brume-capsule 0;
+  }
+}
+.button-dropdown.open.open-down .secondary-items {
+  transform: translate(0, 6px);
+}
+.button-dropdown .secondary-items {
+  .brume-glass();
+  .brume-glass-children();
+  border: 0;
+  border-radius: @brume-radius-l;
+  padding: 6px 0;
+  .item {
+    border-radius: @brume-radius-s;
+    margin: 0 6px;
+  }
+}
+
+// Modales : feuille opaque (c'est du contenu), arrière-plan voilé et flouté.
+.modal-container {
+  &.animate {
+    background-color: fade(@brume-canvas, 55%);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+  .modal {
+    border-radius: @brume-radius-xl;
+    box-shadow: 0 0 0 0.5px @brume-hairline, 0 24px 60px -12px fade(@brume-ink, 22%);
+    overflow: hidden;
+  }
+}
+
+// Élément sélectionné des menus : jetons @brume-menu-selected-* (aplat d'accent et
+// texte blanc dans Brume, aplat pastel et texte encre dans les variantes pastel).
+.menu .item.selected,
+.menu .item:active,
+.fixed-popover-container .fixed-popover .menu .item.selected,
+.button-dropdown .secondary-items .item.selected {
+  background-color: @brume-menu-selected-bg;
+  color: @brume-menu-selected-text;
+  .primary {
+    color: @brume-menu-selected-text;
+  }
+  .secondary {
+    color: @brume-menu-selected-secondary;
+  }
+}

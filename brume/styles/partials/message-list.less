@@ -1,0 +1,163 @@
+// Lecture : messages en cartes blanches sur fond brume, rayons généreux,
+// ombre diffuse plutôt qu'un contour.
+//
+// Grille :
+//   20pt  marge des cartes dans la colonne (la base n'en laisse que 6)
+//   20pt  marge du texte dans la carte ; l'objet du fil s'aligne dessus
+//   12pt  écart entre deux cartes
+//   la zone "Write a reply..." prolonge la dernière carte au lieu d'en coller une seconde
+
+@brume-card-gap: 12px;
+@brume-card-margin: 20px;
+@brume-card-padding: 20px;
+
+#message-list {
+  .messages-wrap .scroll-region-content-inner {
+    padding: 4px @brume-card-margin 40px;
+  }
+
+  // Objet du fil, aligné sur le texte des cartes.
+  .message-subject-wrap {
+    color: @brume-ink;
+    margin: 12px auto 14px;
+    padding: 0 @brume-card-padding;
+  }
+  .message-subject {
+    font-weight: @font-weight-semi-bold;
+  }
+  .message-icons-wrap img {
+    background: @brume-icon;
+  }
+
+  .message-item-wrap {
+    padding-bottom: @brume-card-gap;
+
+    .message-item-white-wrap {
+      border-radius: @brume-radius-l;
+      box-shadow: @brume-card-shadow;
+    }
+    &.collapsed .message-item-white-wrap {
+      background-color: @brume-paper-dim;
+      box-shadow: @brume-ring;
+    }
+
+    // Dernier message : il se prolonge dans la zone de réponse.
+    &.before-reply-area {
+      padding-bottom: 0;
+      .message-item-white-wrap {
+        border-radius: @brume-radius-l @brume-radius-l 0 0;
+      }
+    }
+  }
+
+  .message-item-area {
+    padding: 0 @brume-card-padding @brume-card-padding;
+  }
+
+  .message-header {
+    padding-top: @brume-card-padding;
+  }
+
+  // Zone de réponse : bas de la dernière carte, séparée par un filet continu.
+  .footer-reply-area-wrap {
+    margin: 0 auto @brume-card-gap;
+    border-top: 1px solid @brume-hairline;
+    border-radius: 0 0 @brume-radius-l @brume-radius-l;
+    box-shadow: @brume-card-shadow-down;
+    overflow: hidden;
+    color: @text-color-subtle;
+    transition: background 120ms ease-out;
+
+    img.content-mask {
+      background-color: @text-color-subtle;
+    }
+    .footer-reply-area {
+      padding: 14px @brume-card-padding;
+    }
+    &:hover {
+      background: @brume-paper-dim;
+      color: @accent-primary;
+      img.content-mask {
+        background-color: @accent-primary;
+      }
+    }
+  }
+
+  // Messages masqués ("N older messages") : capsule et tranches de cartes.
+  .minified-bundle {
+    .num-messages {
+      border: 0;
+      border-radius: @brume-capsule;
+      box-shadow: @brume-card-shadow;
+    }
+    .msg-line {
+      border-top: 0;
+      border-radius: @brume-radius-l @brume-radius-l 0 0;
+      background-color: @brume-paper-dim;
+      box-shadow: @brume-ring;
+    }
+  }
+
+  .show-hidden-messages {
+    border-radius: @brume-radius-m;
+    background-color: @brume-fill-subtle;
+    border-color: @brume-hairline;
+  }
+}
+
+// Étiquettes et participants
+.mail-label {
+  border-radius: @brume-radius-xs;
+}
+
+//======================= Panneau latéral (contact) ===================//
+
+.column-MessageListSidebar {
+  background-color: @brume-mist;
+}
+
+// Fiches : mêmes cartes que les messages, mêmes marges.
+.sidebar-section {
+  margin: @brume-card-gap @brume-card-gap 0;
+  padding: 16px;
+  border: 0;
+  border-radius: @brume-radius-l;
+  box-shadow: @brume-card-shadow;
+
+  h2 {
+    color: @text-color-very-subtle;
+    letter-spacing: 0.6px;
+    &:after {
+      left: -16px;
+      width: calc(~'100% + 32px');
+    }
+  }
+}
+
+.sidebar-participant-picker {
+  padding: @brume-card-gap @brume-card-gap 20px;
+}
+
+// Sélecteur de panneaux : contrôle segmenté en capsule.
+.sidebar-panels .sidebar-panel-switcher {
+  margin: @brume-card-gap @brume-card-gap 0;
+  padding: 3px;
+  border-radius: @brume-capsule;
+  background: @brume-fill;
+
+  .sidebar-panel-tab {
+    border-radius: @brume-capsule;
+    &.active {
+      box-shadow: @brume-ring, 0 1px 3px fade(@brume-ink, 10%);
+    }
+  }
+}
+
+// Fils liés dans la fiche contact : la base suppose 15px de marge interne.
+.sidebar-section .related-threads {
+  width: calc(~'100% + 32px');
+  left: -16px;
+  top: 16px;
+  margin-top: -16px;
+  border-top-color: @brume-hairline;
+}

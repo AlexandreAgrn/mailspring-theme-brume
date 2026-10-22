@@ -1,0 +1,30 @@
+// Brume Ardoise : Brume avec la barre latérale ardoise et l'accent corail de Darkside.
+// Règles strictement identiques à Brume ; seule la palette (fin de ui-variables.less) change.
+//
+// Principes appliqués (Human Interface Guidelines, macOS 26) :
+// 1. Le contenu reste opaque et prioritaire ; le verre est réservé aux calques flottants.
+// 2. Jamais de verre sur du verre.
+// 3. Rayons concentriques : un élément imbriqué = rayon du parent - marge.
+// 4. Pas de lignes de séparation dures : les surfaces se distinguent par la teinte.
+// 5. Un seul accent, utilisé avec parcimonie.
+// 6. Les réglages d'accessibilité du système (transparence, mouvement, contraste) priment.
+
+@import 'ui-variables';
+
+:root {
+  // Accent du thème (teintes et aplats). Pas de suivi de l'accent macOS ici : le corail
+  // pastel va avec l'ardoise, et ses textes utilisent un corail profond distinct
+  // (@brume-accent-ink).
+  --brume-accent: @brume-accent;
+}
+
+@import 'partials/glass';
+@import 'partials/surfaces';
+@import 'partials/toolbar';
+@import 'partials/sidebar';
+@import 'partials/thread-list';
+@import 'partials/message-list';
+@import 'partials/controls';
+@import 'partials/composer';
+@import 'partials/components';
+@import 'partials/accessibility';

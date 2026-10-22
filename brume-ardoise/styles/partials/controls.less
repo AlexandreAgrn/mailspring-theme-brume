@@ -1,0 +1,111 @@
+// Contrôles : capsules, aplats sans dégradé, anneau de focus pastel.
+// Les couleurs d'accent passent par var(--brume-accent) (@brume-accent-var) : elles
+// suivent l'accent du thème, ou celui de macOS si on l'active dans index.less.
+
+@brume-emphasis-bg: @brume-accent-var;
+@brume-emphasis-bg-hover: color-mix(in oklab, @brume-accent-var, white 8%);
+@brume-emphasis-bg-active: color-mix(in oklab, @brume-accent-var, black 8%);
+@brume-emphasis-rim: inset 0 1px 0 fade(#ffffff, 22%);
+
+// Boutons standards en capsule (macOS 26).
+.btn {
+  border-radius: @brume-capsule;
+}
+
+// Bouton principal : aplat d'accent, reflet léger en haut, plus de dégradé bleu.
+.btn.btn-emphasis {
+  background: @brume-emphasis-bg;
+  border: 0;
+  box-shadow: @brume-emphasis-rim, 0 1px 2px color-mix(in oklab, @brume-accent-var 30%, transparent);
+  &:before {
+    display: none;
+  }
+  &:hover {
+    background: @brume-emphasis-bg-hover;
+  }
+  &:active {
+    background: @brume-emphasis-bg-active;
+  }
+}
+
+.btn.btn-danger {
+  box-shadow: inset 0 1px 0 fade(#ffffff, 18%);
+}
+
+// Boutons à choix (Envoyer + flèche) : une capsule coupée en deux.
+.button-dropdown {
+  .primary-item {
+    border-radius: @brume-capsule 0 0 @brume-capsule;
+  }
+  .secondary-picker {
+    border-radius: 0 @brume-capsule @brume-capsule 0;
+  }
+  .only-item {
+    border-radius: @brume-capsule;
+  }
+  &.btn-emphasis {
+    .primary-item,
+    .secondary-picker,
+    .only-item {
+      background: @brume-emphasis-bg;
+      color: @btn-emphasis-text-color;
+      border: 0;
+      box-shadow: @brume-emphasis-rim;
+      &:before {
+        display: none;
+      }
+      &:hover {
+        background: @brume-emphasis-bg-hover;
+      }
+      &:active {
+        background: @brume-emphasis-bg-active;
+      }
+    }
+    .secondary-picker {
+      border-left: 1px solid fade(@btn-emphasis-text-color, 25%);
+    }
+  }
+}
+
+// Champs : anneau de focus de 3px, comme les contrôles natifs. Le contour
+// `:focus-visible` global de la base est retiré ici pour ne pas doubler l'anneau.
+textarea,
+input[type='text'],
+input[type='email'],
+input[type='number'],
+input[type='password'],
+input[type='search'],
+input[type='tel'],
+input[type='url'] {
+  &:focus {
+    border-color: @accent-primary;
+    box-shadow: 0 0 0 3px @brume-accent-ring;
+    outline: none;
+  }
+}
+
+// Navigation au clavier ailleurs : contour d'accent doux et décollé, au lieu du trait
+// plein de 2px.
+:focus-visible {
+  outline: 2px solid @brume-accent-ring;
+  outline-offset: 2px;
+}
+
+// Recherche de la liste des fils : décollée de la barre latérale et alignée sur les
+// pastilles de la liste (8pt), remplie plutôt que cerclée.
+.toolbar-ThreadList .thread-search-bar {
+  margin-left: 8px;
+  margin-right: 8px;
+  background: @brume-fill-subtle;
+  box-shadow: none;
+  transition: background 140ms ease-out, box-shadow 140ms ease-out;
+  &:focus-within {
+    background: @brume-paper;
+    box-shadow: 0 0 0 1px color-mix(in oklab, @brume-accent-var 55%, transparent),
+      0 0 0 4px @brume-accent-ring;
+  }
+}
+body.is-blurred .toolbar-ThreadList .thread-search-bar {
+  background: @brume-fill-subtle;
+  box-shadow: none;
+}

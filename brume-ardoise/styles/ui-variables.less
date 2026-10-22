@@ -1,0 +1,321 @@
+// Brume : variables du thème.
+//
+// Ce fichier est importé par toutes les feuilles de Mailspring (`@import 'ui-variables'`).
+// Il ne doit contenir QUE des variables : tout sélecteur écrit ici serait dupliqué
+// dans chaque feuille compilée.
+//
+// Règle d'or : une variable que Mailspring passe à une fonction LESS (darken, fade,
+// mix...) doit rester une couleur littérale. Seules les variables déjà dynamiques
+// dans la base (@accent-primary et dérivées) passent par var() / color-mix().
+
+@import 'base/ui-variables';
+
+//============================== Palette ==============================//
+
+// Neutres froids, légèrement lavande.
+@brume-ink: #1f2230; // texte (15,8:1 sur blanc)
+@brume-canvas: #f2f1f8; // "chrome" : barre latérale, barre d'outils de la barre latérale
+@brume-paper: #ffffff; // contenu : liste des fils
+@brume-mist: #f7f7fb; // fond de lecture, sous les cartes de message
+
+// Accent pervenche. Couleur d'encre : 5,8:1 sur blanc, texte blanc lisible dessus.
+// Trois rôles, confondus ici mais séparés dans les variantes à accent pastel :
+//   @brume-accent      aplats et teintes (sélection, pastilles, bouton principal)
+//   @brume-accent-ink  texte et icônes d'accent sur fond clair (AA requis)
+//   @brume-on-accent   texte posé sur un aplat d'accent
+@brume-accent: #5558c8;
+@brume-accent-ink: @brume-accent;
+@brume-on-accent: #ffffff;
+
+// Encres pastel (AA sur blanc) et aplats associés.
+@brume-sage: #2e7a55;
+@brume-sage-soft: #dcefe3;
+@brume-peach: #a2561f;
+@brume-peach-soft: #fbe5d4;
+@brume-rose: #b13a4e;
+@brume-rose-soft: #f8dce1;
+@brume-sky: #2d6c9c;
+@brume-sky-soft: #dbe9f5;
+@brume-violet: #7449b8;
+@brume-butter: #f6e9a8;
+@brume-apricot: #f3c896;
+
+// Lignes et ombres : toujours dérivées de l'encre, jamais du noir pur.
+@brume-hairline: fade(@brume-ink, 8%);
+@brume-hairline-strong: fade(@brume-ink, 14%);
+
+// Rayons concentriques : rayon intérieur = rayon extérieur - marge.
+@brume-radius-xs: 6px;
+@brume-radius-s: 8px; // pastilles de menu (14 - 6)
+@brume-radius-m: 10px; // lignes de la liste, éléments de barre latérale
+@brume-radius-l: 14px; // cartes de message, popovers
+@brume-radius-xl: 20px; // modales
+@brume-capsule: 999px;
+
+// Teintes d'accent calculées à l'exécution, pour suivre --brume-accent.
+@brume-accent-var: var(--brume-accent);
+@brume-accent-soft: color-mix(in oklab, @brume-accent-var 16%, @brume-paper);
+@brume-accent-softer: color-mix(in oklab, @brume-accent-var 8%, @brume-paper);
+@brume-accent-sidebar: color-mix(in oklab, @brume-accent-var 16%, @brume-canvas);
+@brume-accent-ring: color-mix(in oklab, @brume-accent-var 28%, transparent);
+
+// Verre : uniquement pour les calques flottants (popovers, menus, modales).
+@brume-glass-fill: fade(#ffffff, 72%);
+@brume-glass-fill-solid: #ffffff;
+@brume-glass-blur: blur(28px) saturate(170%);
+@brume-glass-edge: inset 0 1px 0 fade(#ffffff, 90%), inset 0 0 0 0.5px fade(#ffffff, 55%),
+  0 0 0 0.5px fade(@brume-ink, 10%);
+@brume-glass-shadow: 0 12px 32px -8px fade(@brume-ink, 18%), 0 2px 6px fade(@brume-ink, 6%);
+
+// Neutres : une échelle courte, toujours dérivée de l'encre.
+@brume-fill-subtle: fade(@brume-ink, 4%); // survol, champs remplis
+@brume-fill: fade(@brume-ink, 6%); // appui, contrôles segmentés
+@brume-fill-opaque: mix(@brume-ink, @brume-paper, 4%); // aplats opaques : survol de ligne, plateaux
+@brume-fill-opaque-strong: mix(@brume-ink, @brume-paper, 7%);
+@brume-paper-dim: #fcfcfe; // carte repliée, survol de la zone de réponse
+@brume-icon: fade(@brume-ink, 58%); // icônes et libellés tertiaires (3,6:1)
+@brume-control-border: fade(@brume-ink, 30%); // cases à cocher, pastilles de couleur
+@brume-control-border-hover: fade(@brume-ink, 45%);
+@brume-scroll: fade(@brume-ink, 22%);
+@brume-scroll-hover: fade(@brume-ink, 38%);
+
+// Ombres et contours
+@brume-ring: 0 0 0 0.5px @brume-hairline; // contour d'un demi-point
+@brume-card-shadow: @brume-ring, 0 2px 10px -2px fade(@brume-ink, 7%);
+@brume-card-shadow-down: @brume-ring, 0 8px 10px -6px fade(@brume-ink, 9%); // rien vers le haut
+@brume-capsule-edge: inset 0 1px 0 fade(#ffffff, 95%), 0 0 0 0.5px @brume-hairline-strong,
+  0 1px 2px fade(@brume-ink, 5%);
+
+// Barre latérale et sa portion de barre d'outils : rôles de couleur.
+// Les règles (sidebar.less, toolbar.less) n'utilisent que ces jetons ; une variante de
+// couleur, comme Ardoise, ne redéfinit que ces valeurs.
+@brume-toolbar-bg: @brume-canvas; // barre d'outils, hors colonnes teintées
+@brume-sidebar-bg: @brume-canvas;
+@brume-sidebar-text: @text-color-subtle;
+@brume-sidebar-strong: @brume-ink;
+@brume-sidebar-heading: @text-color-very-subtle;
+@brume-sidebar-icon: @brume-icon;
+@brume-sidebar-count: @text-color-very-subtle;
+@brume-sidebar-hover: @brume-fill-subtle;
+@brume-sidebar-hairline: @brume-hairline;
+@brume-sidebar-selected-bg: @brume-accent-sidebar;
+@brume-sidebar-selected-text: @accent-primary;
+@brume-sidebar-selected-icon: @accent-primary;
+@brume-sidebar-selected-count: @accent-primary;
+@brume-sidebar-selected-rim: fade(#ffffff, 55%); // reflet sur l'arête haute de la pastille
+@brume-sidebar-drop-bg: @brume-accent-soft;
+@brume-sidebar-input-bg: @brume-paper;
+@brume-sidebar-scroll: @brume-scroll;
+@brume-sidebar-scroll-hover: @brume-scroll-hover;
+@brume-sidebar-gumdrop-blurred: fade(@brume-ink, 15%); // boutons de fenêtre, fenêtre inactive
+
+// Bouton "Nouveau message" : seule capsule teintée de la barre d'outils.
+@brume-compose-bg: @brume-accent-soft;
+@brume-compose-bg-hover: color-mix(in oklab, @brume-accent-var 22%, @brume-paper);
+@brume-compose-icon: @accent-primary;
+@brume-compose-edge: @brume-capsule-edge;
+
+// Élément sélectionné des menus et listes de suggestions.
+@brume-menu-selected-bg: @accent-primary;
+@brume-menu-selected-text: @brume-on-accent;
+@brume-menu-selected-secondary: fade(@brume-on-accent, 75%);
+
+// Largeurs et hauteurs lues par Mailspring au démarrage (propriétés CSS de l'espace de
+// travail, voir surfaces.less). Valeurs d'origine : barre latérale 165 à 250pt,
+// lignes de la liste 36pt (affichage large) et 85pt (affichage étroit).
+@brume-sidebar-min-width: 200px;
+@brume-sidebar-max-width: 420px;
+@brume-thread-row-wide: 40px;
+@brume-thread-row-narrow: 90px;
+
+// Géométrie de la barre latérale, commune aux deux thèmes.
+//   16pt  colonne de départ : boutons de fenêtre, intitulés, triangles
+//    8pt  marge des pastilles, 10pt de rayon
+//   32pt  hauteur des lignes, texte à 14pt
+@brume-sidebar-gutter: 16px;
+@brume-sidebar-pill-inset: 8px;
+@brume-sidebar-pill-radius: 10px;
+@brume-sidebar-row-height: 32px;
+
+//============================ Mailspring =============================//
+
+@black: @brume-ink;
+@white: #ffffff;
+@blue-dark: @brume-sky;
+@blue: @brume-accent;
+@blue-light: @brume-sky;
+
+// L'accent passe par une propriété CSS définie dans index.less.
+@accent-primary: @brume-accent-var;
+@accent-primary-dark: color-mix(in oklab, @brume-accent-var, black 14%);
+@component-active-color: @accent-primary;
+@component-active-bg: @background-primary;
+
+@background-primary: @brume-paper;
+@background-off-primary: #fcfcfe;
+@background-secondary: @brume-mist;
+@background-tertiary: #7c8197;
+@background-gradient: none;
+
+@color-info: @brume-sky;
+@color-success: @brume-sage;
+@color-warning: @brume-peach;
+@color-error: @brume-rose;
+@color-danger: @brume-rose;
+
+@border-color-primary: #e3e3eb;
+@border-color-secondary: #e6e6ee;
+@border-color-tertiary: #6a6f86;
+@border-color-divider: #e9e9f0;
+
+// Typographie
+@text-color: @brume-ink;
+@text-color-subtle: fade(@brume-ink, 72%); // 5,9:1, AA
+@text-color-very-subtle: fade(@brume-ink, 46%); // décoratif : compteurs, intitulés
+@text-color-inverse: #ffffff;
+@text-color-inverse-subtle: fade(#ffffff, 82%);
+@text-color-inverse-very-subtle: fade(#ffffff, 60%);
+@text-color-heading: @brume-ink;
+
+@text-color-link: @brume-accent;
+@text-color-link-hover: darken(@brume-accent, 8%);
+@text-color-link-active: darken(@brume-accent, 12%);
+
+@text-color-search-match: @brume-butter;
+@text-color-search-current-match: @brume-apricot;
+
+// Police système : SF Pro sur macOS, comme les apps natives.
+@font-family-sans-serif: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue',
+  sans-serif;
+@font-family-monospace: ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
+@font-family: @font-family-sans-serif;
+@font-family-heading: @font-family-sans-serif;
+
+// Rayons
+@border-radius-small: @brume-radius-xs;
+@border-radius-base: @brume-radius-s;
+@border-radius-large: @brume-radius-l;
+@component-border-radius: @brume-radius-xs;
+
+// Ombres : plus diffuses et plus légères que la base.
+@standard-shadow-color: fade(@brume-ink, 10%);
+@standard-shadow: 0 0 0 0.5px fade(@brume-ink, 7%), 0 2px 8px fade(@brume-ink, 6%);
+@standard-shadow-up: 0 0 0 0.5px fade(@brume-ink, 7%), 0 -2px 8px fade(@brume-ink, 6%);
+@shadow-border: 0 0 0 0.5px @brume-hairline-strong;
+
+// Boutons
+@btn-border-color: @brume-hairline-strong;
+@btn-default-bg-color: #ffffff;
+@btn-default-text-color: @text-color;
+@btn-icon-color: #8a8ea3;
+@btn-action-bg-color: @brume-sage-soft;
+@btn-action-text-color: @brume-sage;
+@btn-emphasis-bg-color: @brume-accent;
+@btn-emphasis-text-color: @brume-on-accent;
+@btn-danger-bg-color: @brume-rose;
+@btn-danger-text-color: #ffffff;
+
+// Menus déroulants et champs
+@dropdown-default-bg-color: #ffffff;
+@dropdown-default-border-color: @brume-hairline-strong;
+@input-bg: #ffffff;
+@input-bg-disabled: @brume-mist;
+@input-border-color: @brume-hairline-strong;
+
+// Barre d'outils et barre latérale
+// Valeurs lues par les feuilles de Mailspring : reliées aux jetons de la barre latérale,
+// pour que contacts, calendrier et notifications suivent la même surface.
+@toolbar-background-color: @brume-toolbar-bg;
+@panel-background-color: @brume-sidebar-bg;
+@source-list-bg: @brume-sidebar-bg;
+@source-list-inset-bg: @brume-sidebar-bg;
+@source-list-active-bg: @brume-sidebar-selected-bg;
+@source-list-active-color: @brume-sidebar-selected-text;
+
+// Liste des fils : pas de séparateurs, la sélection est une pastille.
+@list-bg: @brume-paper;
+@list-border: @brume-paper;
+@list-hover-bg: #f4f4f8;
+@list-focused-color: @text-color;
+@list-focused-bg: @brume-accent-soft;
+@list-focused-border: @brume-accent-soft;
+@list-selected-color: inherit;
+@list-selected-bg: @brume-accent-softer;
+@list-selected-border: @brume-accent-softer;
+
+// Bandeaux de notification (texte blanc : encres AA).
+@background-color-info: @brume-sky;
+@background-color-success: @brume-sage;
+@background-color-warning: @brume-peach;
+@background-color-error: @brume-rose;
+@background-color-pending: #9a9eb2;
+
+// Menus : surlignage accent + texte blanc, comme les menus macOS.
+@menu-item-color-hover: fade(@brume-ink, 5%);
+@menu-item-color-selected: @accent-primary;
+@menu-text-color-selected: @brume-on-accent;
+
+// Suivi d'ouverture et de clics
+@open-tracking-color: @brume-violet;
+@link-tracking-color: @brume-rose;
+
+//============================== Ardoise ==============================//
+// Variante "barre latérale sombre", héritière de Darkside.
+// Seules des couleurs changent : LESS évalue les variables à la dernière définition,
+// ces lignes redéfinissent donc les jetons de Brume partout où ils sont utilisés.
+// Les règles (partials/) sont strictement celles de Brume.
+
+// Ardoise violacée (Darkside : #313042) et ses dérivés.
+@ardoise-panel: #2f2e42;
+@ardoise-panel-text: #b9b8cc; // 6,8:1 sur l'ardoise
+@ardoise-panel-text-dim: fade(#b9b8cc, 62%); // intitulés, triangles, décoratif
+@ardoise-panel-strong: #ffffff; // 13,2:1
+
+// Surfaces : barre d'outils blanche comme la liste, lecture teintée d'ardoise.
+@brume-canvas: #ffffff;
+@brume-mist: #f5f5f7;
+
+// Accent corail pastel (Darkside : #f18260, adouci).
+// Aplat : 5,8:1 avec le texte ardoise posé dessus. Il ne porte jamais de texte blanc.
+@brume-accent: #f0937a;
+@brume-accent-ink: #b24e37; // corail profond pour texte et icônes sur fond clair (5,2:1)
+@brume-on-accent: @ardoise-panel;
+
+@accent-primary: @brume-accent-ink;
+@accent-primary-dark: darken(@brume-accent-ink, 8%);
+@text-color-link: @brume-accent-ink;
+@text-color-link-hover: darken(@brume-accent-ink, 8%);
+@text-color-link-active: darken(@brume-accent-ink, 12%);
+
+// Barre latérale
+@brume-toolbar-bg: @brume-paper;
+@brume-sidebar-bg: @ardoise-panel;
+@brume-sidebar-text: @ardoise-panel-text;
+@brume-sidebar-strong: @ardoise-panel-strong;
+@brume-sidebar-heading: @ardoise-panel-text-dim;
+@brume-sidebar-icon: @ardoise-panel-text;
+@brume-sidebar-count: @brume-accent; // 5,8:1 sur l'ardoise
+@brume-sidebar-hover: fade(#ffffff, 6%);
+@brume-sidebar-hairline: fade(#ffffff, 8%);
+@brume-sidebar-selected-bg: fade(#ffffff, 10%);
+@brume-sidebar-selected-text: @ardoise-panel-strong;
+@brume-sidebar-selected-icon: @brume-accent;
+@brume-sidebar-selected-count: @brume-accent;
+@brume-sidebar-selected-rim: fade(#ffffff, 6%);
+@brume-sidebar-drop-bg: fade(#f0937a, 18%);
+@brume-sidebar-input-bg: fade(#ffffff, 8%);
+@brume-sidebar-scroll: fade(#ffffff, 18%);
+@brume-sidebar-scroll-hover: fade(#ffffff, 32%);
+@brume-sidebar-gumdrop-blurred: fade(#ffffff, 20%);
+
+// Bouton "Nouveau message" : capsule de verre sombre.
+@brume-compose-bg: fade(#ffffff, 9%);
+@brume-compose-bg-hover: fade(#ffffff, 15%);
+@brume-compose-icon: @ardoise-panel-strong;
+@brume-compose-edge: inset 0 1px 0 fade(#ffffff, 12%), 0 0 0 0.5px fade(#000000, 25%),
+  0 1px 2px fade(#000000, 12%); // même forme que @brume-capsule-edge
+
+// Menus : le corail pastel ne porte pas de texte blanc, sélection en aplat doux.
+@brume-menu-selected-bg: color-mix(in oklab, @brume-accent-var 30%, @brume-paper);
+@brume-menu-selected-text: @brume-ink;
+@brume-menu-selected-secondary: @text-color-subtle;

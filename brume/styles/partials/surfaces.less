@@ -1,0 +1,74 @@
+// Dimensions de l'espace de travail : Mailspring lit ces propriétés au démarrage pour
+// borner le redimensionnement de la barre latérale et fixer la hauteur des lignes.
+// Un changement de thème ne les applique qu'après un redémarrage de l'app.
+mailspring-workspace {
+  --account-sidebar-min-width: @brume-sidebar-min-width;
+  --account-sidebar-max-width: @brume-sidebar-max-width;
+  --thread-list-item-height-wide: @brume-thread-row-wide;
+  --thread-list-item-height-narrow: @brume-thread-row-narrow;
+}
+
+// Surfaces : trois teintes au lieu de lignes de séparation.
+//   canvas (lavande grisée) : barre latérale et sa portion de barre d'outils
+//   paper (blanc)            : liste des fils, de la barre d'outils jusqu'en bas
+//   mist (blanc bleuté)      : lecture, sous les cartes de message
+// Chaque colonne de la barre d'outils prend la teinte de sa colonne de contenu :
+// le contenu "monte" jusqu'en haut de la fenêtre, comme dans les apps macOS 26.
+
+body .sheet-toolbar {
+  border-bottom-color: transparent;
+}
+
+.sheet-toolbar-container {
+  .toolbar-ThreadList {
+    background-color: @brume-paper;
+  }
+  .toolbar-MessageList,
+  .toolbar-MessageListSidebar {
+    background-color: @brume-mist;
+  }
+}
+
+// Séparateurs de colonnes : un filet à peine visible, les teintes font le reste.
+.flexbox-handle-horizontal div {
+  box-shadow: 0.5px 0 0 @brume-hairline;
+}
+.column-MessageListSidebar {
+  border-left-color: @brume-hairline;
+}
+
+#message-list {
+  background: @brume-mist;
+}
+
+// Sélection de texte : accent pastel plutôt que le bleu système saturé.
+::selection {
+  background: color-mix(in oklab, @brume-accent-var 24%, transparent);
+}
+
+// Barres de défilement : fines, sans piste visible, comme macOS.
+// La piste d'origine (17px, fond blanc, filet) s'affichait au survol du bord droit.
+.scrollbar-track {
+  width: 11px;
+  padding: 2px 3px;
+  background: transparent;
+  border-left: 0;
+
+  .scrollbar-handle {
+    background-color: @brume-scroll;
+    border: 0;
+    border-radius: @brume-capsule;
+    transition: background-color 120ms ease-out;
+  }
+  &:hover .scrollbar-handle,
+  &.dragging .scrollbar-handle {
+    background-color: @brume-scroll-hover;
+    border: 0;
+  }
+}
+
+// Poignées de redimensionnement des colonnes : toujours au-dessus des contenus
+// (barres de défilement comprises), pour rester saisissables.
+.flexbox-handle-horizontal {
+  z-index: 20;
+}

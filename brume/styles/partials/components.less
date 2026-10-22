@@ -1,0 +1,398 @@
+// Composants secondaires : tout ce qui n'a pas sa propre feuille mais restait sur le
+// style d'origine de Mailspring (dégradés, bleus saturés, angles de 2 à 4px, filets
+// noirs). Uniquement des jetons du thème.
+
+//===================== Suggestions de la recherche =====================//
+// Calque flottant : même verre que les popovers.
+.thread-search-bar .suggestions {
+  .brume-glass();
+  top: @toolbar-btn-height-darwin + 6px;
+  padding: 6px 0 0;
+  border-radius: @brume-radius-l;
+  overflow: hidden;
+
+  .suggestion {
+    margin: 0 6px;
+    border-radius: @brume-radius-s;
+    color: @text-color-subtle;
+    &:hover:not(.selected) {
+      background-color: @brume-fill-subtle;
+    }
+    &.selected {
+      background-color: @brume-menu-selected-bg;
+      color: @brume-menu-selected-text;
+      .suggestion-token {
+        color: @brume-menu-selected-text;
+      }
+    }
+    .suggestion-token {
+      color: @accent-primary;
+    }
+  }
+
+  .footer {
+    margin-top: 6px;
+    background: transparent;
+    border-top: 1px solid @brume-hairline;
+    color: @text-color-very-subtle;
+  }
+}
+
+//===================== Déplacer / étiqueter ============================//
+// Le menu du sélecteur pose un fond opaque qui masquait le verre du popover.
+.category-picker-popover .menu,
+.category-picker-dropdown .menu {
+  background: transparent;
+  .item.divider {
+    height: 1px;
+    margin: 6px 12px;
+    width: calc(~'100% - 24px');
+    background-color: @brume-hairline;
+  }
+}
+
+//===================== Toast "annuler" =================================//
+// Capsule sombre en verre, actions en pastilles.
+.undo-redo-toast {
+  .content {
+    opacity: 1;
+    border-radius: @brume-capsule;
+    background: fade(@brume-ink, 86%);
+    -webkit-backdrop-filter: @brume-glass-blur;
+    backdrop-filter: @brume-glass-blur;
+    box-shadow: @brume-glass-shadow;
+    padding-right: 6px;
+  }
+  .message {
+    margin-left: 20px;
+  }
+  .action {
+    border: 0;
+    border-radius: @brume-capsule;
+    padding: 4px 12px;
+    background: fade(#ffffff, 14%);
+    &:hover {
+      border: 0;
+      background: fade(#ffffff, 24%);
+    }
+    &:active {
+      border: 0;
+      background: fade(#ffffff, 8%);
+    }
+  }
+}
+
+//===================== Bandeau "images masquées" =======================//
+.autoload-images-header {
+  background-color: @brume-fill-subtle;
+  border: 0;
+  border-radius: @brume-radius-m;
+  color: @text-color-subtle;
+  .option {
+    color: @accent-primary;
+  }
+  .option:hover {
+    color: @accent-primary-dark;
+  }
+}
+
+//===================== Jetons (destinataires) ==========================//
+// Capsules plates : plus de dégradé ni de contour, sélection en aplat d'accent.
+.tokenizing-field .token {
+  border-radius: @brume-capsule;
+  background: @brume-fill;
+  box-shadow: none;
+  &:hover {
+    background: @brume-accent-softer;
+    box-shadow: none;
+  }
+  &.selected,
+  &.dragging {
+    background: @brume-menu-selected-bg;
+    color: @brume-menu-selected-text;
+    border: 0;
+    border-radius: @brume-capsule;
+    margin: 1px 5px 1px 1px;
+    box-shadow: none;
+    .action,
+    .secondary,
+    .participant-secondary {
+      color: @brume-menu-selected-secondary;
+    }
+    .action img {
+      background-color: @brume-menu-selected-secondary;
+    }
+  }
+  &.invalid {
+    background: transparent;
+    border-bottom: 0;
+    box-shadow: inset 0 0 0 1px @brume-rose;
+  }
+  &.invalid.selected,
+  &.invalid.dragging {
+    background: @brume-rose;
+    color: #ffffff;
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+//===================== Pièces jointes ==================================//
+.nylas-attachment-item {
+  .file-info-wrap,
+  .file-action-icon,
+  .file-thumbnail-preview {
+    border-color: @brume-hairline-strong;
+    background-color: @brume-paper;
+  }
+  .file-info-wrap {
+    border-radius: @brume-radius-m 0 0 @brume-radius-m;
+  }
+  .file-action-icon {
+    border-radius: 0 @brume-radius-m @brume-radius-m 0;
+    &.quicklook {
+      border-radius: 0;
+    }
+    &:hover {
+      background-color: @brume-fill-opaque;
+    }
+    &:active {
+      background-color: @brume-fill-opaque-strong;
+    }
+  }
+  .file-thumbnail-preview {
+    border-radius: @brume-radius-m @brume-radius-m 0 0;
+  }
+  .progress-bar-wrap .progress-foreground {
+    background: @accent-primary;
+  }
+}
+
+//===================== Reporter (snooze) ===============================//
+// Grille de pastilles plutôt que des cellules carrées séparées par des filets.
+.snooze-popover {
+  padding: 6px;
+  gap: 2px;
+  .snooze-row {
+    gap: 2px;
+    border: 0;
+    & + .snooze-row {
+      border-top: 0;
+    }
+    .snooze-item {
+      border-radius: @brume-radius-s;
+      & + .snooze-item {
+        border-left: 0;
+      }
+      &:hover {
+        background-color: @brume-fill-subtle;
+      }
+      &:active {
+        background-color: @brume-fill;
+      }
+    }
+  }
+}
+
+//===================== Notifications =================================//
+// Bandeaux à plat, couleurs de la palette ; liens en capsules.
+.notifications-sticky {
+  .notification-developer {
+    background: @brume-violet;
+  }
+  .notification-upgrade {
+    background-image: none;
+    background-color: @brume-sage;
+  }
+  .notification-error {
+    background: @brume-rose;
+    border-color: @brume-rose;
+  }
+  .notifications-sticky-item {
+    border-bottom: 1px solid fade(#ffffff, 18%);
+    a {
+      margin: 4px 4px 4px 0;
+      border-radius: @brume-capsule;
+    }
+    a.default {
+      background-color: fade(#ffffff, 16%);
+    }
+  }
+}
+
+// Synchronisation : pastille sauge au lieu du vert fluo.
+.sidebar-activity .item .sync-activity .account .folder-progress::before {
+  background-color: @brume-sage;
+}
+.sidebar-activity .item .sync-activity .account .folder-progress.busy::before {
+  background-color: transparent;
+  border-color: @brume-sage;
+  animation: brume-border-pulse 3s infinite;
+}
+@keyframes brume-border-pulse {
+  0%,
+  100% {
+    border-color: @brume-sage;
+  }
+  50% {
+    border-color: transparent;
+  }
+}
+
+//===================== Infobulle de défilement =========================//
+.scroll-tooltip {
+  background: fade(@brume-ink, 86%);
+  border: 0;
+  border-radius: @brume-capsule;
+  box-shadow: @brume-glass-shadow;
+  &:before {
+    display: none;
+  }
+  &:after {
+    border-left-color: fade(@brume-ink, 86%);
+  }
+}
+
+//===================== Interrupteur =====================================//
+// Proportions macOS : poignée inscrite dans la piste, piste neutre puis accent.
+.slide-switch {
+  width: 38px;
+  height: 22px;
+  border-radius: @brume-capsule;
+  background-color: fade(@brume-ink, 16%);
+  box-shadow: none;
+  .handle {
+    width: 18px;
+    height: 18px;
+    top: 2px;
+    left: 2px;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px fade(@brume-ink, 25%);
+  }
+  &.active {
+    background-color: @accent-primary;
+    .handle {
+      left: 18px;
+    }
+  }
+}
+
+//===================== Préférences =====================================//
+// Barre d'onglets : couleur de barre d'outils (jamais celle de la barre latérale, qui
+// peut être sombre) ; onglet actif en pastille.
+.container-preference-tabs {
+  background-color: @brume-toolbar-bg;
+  border-bottom: 0;
+  box-shadow: inset 0 -1px 0 @brume-hairline;
+  .preferences-tabs {
+    background-color: @brume-toolbar-bg;
+    padding-bottom: 6px;
+    .item {
+      color: @text-color-subtle;
+      border-radius: @brume-radius-m;
+      padding-bottom: 4px;
+      &.active {
+        background: @brume-accent-sidebar;
+        color: @accent-primary;
+        border-radius: @brume-radius-m;
+        box-shadow: none;
+        img {
+          background-color: @accent-primary;
+        }
+      }
+    }
+  }
+}
+
+// Cartes "Apparence" (clair, sombre, automatique)
+.appearance-mode-switch {
+  .appearance-mode {
+    border: 0;
+    border-radius: @brume-radius-l;
+    background-color: @brume-paper;
+    box-shadow: @brume-card-shadow;
+  }
+  .appearance-mode.active {
+    border: 0;
+    box-shadow: 0 0 0 2px @accent-primary;
+  }
+}
+
+//===================== Autres listes latérales =========================//
+// Contacts et calendrier utilisent la même surface que la barre latérale.
+.contacts-perspective-list,
+.calendar-source-list {
+  color: @brume-sidebar-text;
+}
+.calendar-source-list {
+  border-right-color: @brume-sidebar-hairline;
+  .account-label {
+    color: @brume-sidebar-heading;
+  }
+  // Mini-calendrier : carte blanche aux coins du thème, sur toutes les surfaces.
+  .mini-month-view {
+    border: 0;
+    border-radius: @brume-radius-l;
+    box-shadow: @brume-card-shadow;
+    overflow: hidden;
+  }
+}
+
+//===================== Actions d'un message ============================//
+// Groupe "répondre" de l'en-tête : capsule remplie, sans filets.
+#message-list .message-header .message-actions {
+  border: 0;
+  background: @brume-fill-subtle;
+  border-radius: @brume-capsule;
+  .btn-icon {
+    border-right: 0;
+    border-radius: @brume-capsule;
+    &:hover {
+      background: @brume-fill;
+    }
+  }
+}
+
+//===================== Activité (suivi d'ouverture) =====================//
+// Le popover est en verre aux coins de 14pt ; les lignes de la base sont des aplats
+// rectangulaires qui en débordaient au survol et effaçaient l'arrondi. Le conteneur
+// reprend le rayon du popover et coupe ce qui dépasse ; les lignes deviennent des
+// pastilles en retrait, comme dans les menus.
+.activity-list-container {
+  border-radius: @brume-radius-l;
+  padding-top: 4px; // première pastille à 6pt du bord : rayon 8 = 14 - 6
+
+  .activity-list-item,
+  .activity-list-item.unread {
+    margin: 2px 6px;
+    border-bottom: 0;
+    border-radius: @brume-radius-s;
+    background: transparent;
+    &:hover {
+      background: @brume-fill-subtle;
+    }
+  }
+  .activity-list-item.unread {
+    color: @text-color;
+  }
+
+  .activity-list-toggle-item {
+    background: transparent;
+    &:last-child {
+      border-bottom: 1px solid @brume-hairline;
+    }
+  }
+
+  .activity-summary-cta {
+    border-top: 1px solid @brume-hairline;
+    border-radius: 0 0 @brume-radius-l @brume-radius-l;
+    background: transparent;
+    color: @accent-primary;
+    &:hover {
+      background: @brume-fill-subtle;
+    }
+    &:active {
+      background: @brume-fill;
+    }
+  }
+}

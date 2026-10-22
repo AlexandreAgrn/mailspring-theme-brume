@@ -1,0 +1,271 @@
+// Liste des fils : lignes sans séparateurs, survol et sélection en pastilles arrondies
+// décollées des bords. La pastille est dessinée par ::before, ce qui ne touche ni la
+// hauteur des lignes (calculée par Mailspring) ni la mise en page des colonnes.
+//
+// La base inverse le contenu (texte blanc) des lignes focalisées : avec une sélection
+// pastel, on remet le texte et les icônes en couleur normale.
+
+@brume-row-inset: 8px;
+@brume-row-hover: @brume-fill-opaque;
+@brume-row-blurred: @brume-fill-opaque-strong;
+
+.list-container {
+  .list-rows {
+    background: @brume-paper;
+  }
+
+  .list-item {
+    --brume-row-bg: transparent;
+    // Fond opaque conservé : il masque le fond du geste de balayage (swipe).
+    background: @brume-paper !important;
+    border-bottom-color: transparent !important;
+    isolation: isolate;
+
+    &::before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      top: 1px;
+      bottom: 1px;
+      left: @brume-row-inset;
+      right: @brume-row-inset;
+      border-radius: @brume-radius-m;
+      background: var(--brume-row-bg);
+      transition: background-color 120ms ease-out;
+    }
+
+    &:hover {
+      --brume-row-bg: @brume-row-hover;
+    }
+    &.selected {
+      --brume-row-bg: @brume-accent-softer;
+    }
+    &.focused {
+      --brume-row-bg: @brume-accent-soft;
+      color: @text-color;
+    }
+  }
+}
+
+// La pastille commence à 8px du bord : on décale le contenu d'autant
+// (la base réserve 4px à gauche pour le curseur clavier).
+// Le curseur clavier est redéclaré en entier : la base utilise le raccourci
+// `border-left: 4px ...`, qui remettait la bordure à 4px et décalait la ligne de 8px
+// vers la gauche à la sélection.
+@brume-row-gutter: @brume-row-inset + 4px;
+
+.list-tabular .list-tabular-item {
+  border-left: @brume-row-gutter solid transparent;
+  &::before {
+    left: -4px;
+  }
+  &.keyboard-cursor {
+    border-left: @brume-row-gutter solid transparent;
+    &::before {
+      box-shadow: inset 0 0 0 1.5px color-mix(in oklab, @brume-accent-var 30%, transparent);
+    }
+  }
+
+  // Séparateurs : un filet très léger, en retrait des pastilles, masqué autour des
+  // lignes survolées ou sélectionnées pour ne pas couper leur forme.
+  &::after {
+    content: '';
+    position: absolute;
+    left: 8px;
+    right: @brume-row-gutter + 8px;
+    bottom: 0;
+    height: 1px;
+    background: @brume-hairline;
+    pointer-events: none;
+  }
+  &:hover::after,
+  &.focused::after,
+  &.selected::after,
+  &.keyboard-cursor::after,
+  &.next-is-selected::after {
+    opacity: 0;
+  }
+}
+
+// Chaque ligne est enveloppée dans son propre conteneur (geste de balayage) : les
+// voisines se repèrent donc au niveau de ces conteneurs.
+.list-rows > div:last-child .list-tabular-item::after,
+.list-rows > div:has(+ div .list-tabular-item:hover) .list-tabular-item::after,
+.list-rows > div:has(+ div .list-tabular-item.focused) .list-tabular-item::after,
+.list-rows > div:has(+ div .list-tabular-item.keyboard-cursor) .list-tabular-item::after {
+  opacity: 0;
+}
+
+// Cases à cocher : la base dessine leur contour avec la couleur des séparateurs,
+// que Brume rend invisibles. Contour propre, coins arrondis, accent une fois cochées.
+.list-tabular .list-tabular-item {
+  // Centre de la case aligné sur celui des icônes d'état (point "non lu", étoile),
+  // mesuré à 19,5pt du haut de la ligne : case de 16pt, donc 11,5pt de marge en haut.
+  // (En affichage large, les icônes sont centrées dans une ligne de 40pt : centre à
+  // 20pt, écart d'un demi-point, invisible.)
+  .checkmark {
+    padding: 11.5px 10px 10px;
+  }
+  .checkmark .inner {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid @brume-control-border;
+    border-radius: @brume-radius-xs;
+    background-color: @brume-paper;
+    transition: border-color 120ms ease-out, background-color 120ms ease-out;
+  }
+  &:hover .checkmark .inner {
+    border-color: @brume-control-border-hover;
+  }
+  &.focused .checkmark .inner {
+    border: 1.5px solid @accent-primary;
+  }
+  &.selected .checkmark .inner,
+  &.selected.focused .checkmark .inner {
+    border: 0;
+    border-radius: @brume-radius-xs;
+    background-color: @accent-primary;
+    background-image: url(images/thread-list/checkbox-checkmark@2x.png);
+  }
+}
+
+// Mode lecture à droite : la sélection a l'aspect du focus.
+.thread-list.handler-split .list-container .list-item.selected {
+  --brume-row-bg: @brume-accent-soft;
+  color: @text-color;
+}
+
+// Fenêtre inactive : sélection neutre, comme macOS.
+body.is-blurred .list-container .list-item {
+  &.focused,
+  &.selected {
+    --brume-row-bg: @brume-row-blurred;
+  }
+}
+
+// Annulation de l'inversion de contenu sur les lignes focalisées.
+.brume-uninverse() {
+  color: @text-color;
+
+  .thread-icon,
+  .draft-icon,
+  .mail-important-icon {
+    filter: none;
+  }
+
+  // La base force un fond blanc translucide en !important : on garde des étiquettes
+  // neutres et lisibles sur la pastille.
+  .mail-label {
+    filter: none;
+    background: fade(#ffffff, 75%) !important;
+    box-shadow: inset 0 0 0 0.5px @brume-hairline-strong !important;
+    color: @text-color-subtle !important;
+  }
+}
+
+.thread-list .list-container .list-item.focused,
+.thread-list.handler-split .list-container .list-item.selected {
+  .brume-uninverse();
+}
+
+// Actions au survol (archiver, supprimer, reporter) : le fondu doit épouser la pastille,
+// donc s'arrêter 8px avant le bord et arrondir son extrémité.
+.thread-list .list-item:hover .list-column-HoverActions .inner {
+  top: 1px;
+  height: calc(~'100% - 2px');
+  width: 300px - @brume-row-inset;
+  border-radius: 0 @brume-radius-m @brume-radius-m 0;
+  background-image: linear-gradient(
+    to right,
+    fade(@brume-row-hover, 0%) 0%,
+    @brume-row-hover 45%,
+    @brume-row-hover 100%
+  );
+}
+
+.thread-list .list-item.selected:hover .list-column-HoverActions .inner {
+  background-image: linear-gradient(
+    to right,
+    transparent 0%,
+    @brume-accent-softer 45%,
+    @brume-accent-softer 100%
+  );
+}
+
+.thread-list .list-item.focused:hover .list-column-HoverActions .inner,
+.thread-list.handler-split .list-item.selected:hover .list-column-HoverActions .inner {
+  background-image: linear-gradient(
+    to right,
+    transparent 0%,
+    @brume-accent-soft 45%,
+    @brume-accent-soft 100%
+  );
+  .action {
+    filter: none;
+  }
+}
+
+.thread-list .list-column-HoverActions .action {
+  opacity: 0.7;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+// Point "non lu" : l'image d'origine est d'un bleu saturé ; pastille à l'accent.
+.thread-list .thread-icon.thread-icon-unread,
+.draft-list .thread-icon.thread-icon-unread {
+  background-image: radial-gradient(circle at center, @accent-primary 0 4px, transparent 4.5px);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+// Icônes passées en blanc par les modules sur les lignes sélectionnées : la sélection
+// est pastel, on leur rend leur couleur.
+.list-item.focused,
+.list-item.selected {
+  .open-tracking-icon img.content-mask.opened {
+    background-color: @open-tracking-color;
+  }
+  .open-tracking-icon img.content-mask.unopened {
+    background-color: fade(@open-tracking-color, 25%);
+  }
+  div.personal-level-icon img {
+    filter: none;
+  }
+}
+.thread-list .list-item.focused .timestamp.send-reminders-thread-timestamp {
+  color: inherit;
+  img {
+    background-color: @text-color-subtle;
+  }
+}
+.draft-list .list-container .list-item.focused {
+  .brume-uninverse();
+}
+
+// Glisser pour archiver, supprimer, reporter : couleurs de la palette.
+.thread-list,
+.draft-list {
+  .swipe-backing {
+    &.swipe-trash {
+      background-color: mix(@brume-rose, @brume-paper, 70%);
+      &.confirmed {
+        background-color: @brume-rose;
+      }
+    }
+    &.swipe-archive,
+    &.swipe-all {
+      background-color: mix(@brume-sage, @brume-paper, 70%);
+      &.confirmed {
+        background-color: @brume-sage;
+      }
+    }
+    &.swipe-snooze {
+      background-color: mix(@brume-violet, @brume-paper, 70%);
+      &.confirmed {
+        background-color: @brume-violet;
+      }
+    }
+  }
+}

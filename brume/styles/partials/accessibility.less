@@ -1,0 +1,77 @@
+// Accessibilité : les réglages système priment sur l'esthétique.
+// Réglages Système > Accessibilité > Affichage.
+
+// "Réduire la transparence" : le verre devient opaque.
+@media (prefers-reduced-transparency: reduce) {
+  .fixed-popover-container .fixed-popover,
+  .fixed-popover-container .fixed-popover-pointer,
+  .button-dropdown .secondary-items,
+  .button-dropdown.open.open-up .secondary-items,
+  .button-dropdown.open.open-down .secondary-items,
+  .thread-search-bar .suggestions,
+  .RichEditor-toolbar .dropdown {
+    background-color: @brume-glass-fill-solid;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .undo-redo-toast .content {
+    background: @brume-ink;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .modal-container.animate {
+    background-color: fade(@brume-canvas, 80%);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  body.platform-darwin .sheet-toolbar .btn-toolbar {
+    background: @brume-paper;
+  }
+}
+
+// "Réduire les animations"
+@media (prefers-reduced-motion: reduce) {
+  .fixed-popover-container.popout {
+    animation: none;
+  }
+  .list-container .list-item::before,
+  .outline-view .item,
+  body.platform-darwin .sheet-toolbar .btn-toolbar {
+    transition: none;
+  }
+}
+
+// "Augmenter le contraste" : filets et textes secondaires renforcés.
+@media (prefers-contrast: more) {
+  .fixed-popover-container .fixed-popover,
+  .button-dropdown .secondary-items,
+  .thread-search-bar .suggestions {
+    box-shadow: 0 0 0 1px fade(@brume-ink, 45%), @brume-glass-shadow;
+  }
+  body.platform-darwin .sheet-toolbar .btn-toolbar,
+  body.platform-darwin .sheet-toolbar .button-group {
+    box-shadow: 0 0 0 1px fade(@brume-ink, 40%);
+  }
+  .flexbox-handle-horizontal div {
+    box-shadow: 1px 0 0 fade(@brume-ink, 30%);
+  }
+  .outline-view .heading,
+  .outline-view .item .item-count-box:not(.alt-count) {
+    color: @brume-sidebar-text;
+  }
+  .list-container .list-item.focused::before,
+  .thread-list.handler-split .list-container .list-item.selected::before {
+    box-shadow: inset 0 0 0 1.5px @accent-primary;
+  }
+  #message-list .message-item-wrap .message-item-white-wrap {
+    box-shadow: 0 0 0 1px fade(@brume-ink, 25%);
+  }
+  .RichEditor-toolbar .inner,
+  .composer-inner-wrap .composer-action-bar-content {
+    box-shadow: inset 0 0 0 1px fade(@brume-ink, 30%);
+  }
+  .composer-inner-wrap .composer-field-label,
+  .composer-inner-wrap .composer-header-actions .action {
+    color: @text-color-subtle;
+  }
+}

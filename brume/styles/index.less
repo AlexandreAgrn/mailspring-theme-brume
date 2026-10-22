@@ -1,0 +1,30 @@
+// Brume : thème clair, minimaliste et pastel pour Mailspring, aligné sur Liquid Glass.
+//
+// Principes appliqués (Human Interface Guidelines, macOS 26) :
+// 1. Le contenu reste opaque et prioritaire ; le verre est réservé aux calques flottants.
+// 2. Jamais de verre sur du verre.
+// 3. Rayons concentriques : un élément imbriqué = rayon du parent - marge.
+// 4. Pas de lignes de séparation dures : les surfaces se distinguent par la teinte.
+// 5. Un seul accent, utilisé avec parcimonie.
+// 6. Les réglages d'accessibilité du système (transparence, mouvement, contraste) priment.
+
+@import 'ui-variables';
+
+:root {
+  // Accent du thème. Pour suivre la couleur d'accentuation de macOS
+  // (Réglages Système > Apparence), remplacer la ligne par :
+  //   --brume-accent: var(--system-accent, @{brume-accent});
+  // et cocher l'option d'accent système dans Préférences > Apparence de Mailspring.
+  --brume-accent: @brume-accent;
+}
+
+@import 'partials/glass';
+@import 'partials/surfaces';
+@import 'partials/toolbar';
+@import 'partials/sidebar';
+@import 'partials/thread-list';
+@import 'partials/message-list';
+@import 'partials/controls';
+@import 'partials/composer';
+@import 'partials/components';
+@import 'partials/accessibility';

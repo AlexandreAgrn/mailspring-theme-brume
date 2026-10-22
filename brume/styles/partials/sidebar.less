@@ -1,0 +1,294 @@
+// Barre latérale : surface "chrome" continue avec sa barre d'outils, collée au bord de
+// la fenêtre. Règles communes à Brume et Brume Ardoise : elles n'emploient que les
+// jetons @brume-sidebar-* (ui-variables.less), seuls redéfinis par une variante.
+//
+// Géométrie, depuis le bord de la fenêtre :
+//   16pt  colonne de départ : boutons de fenêtre, intitulés, triangles
+//    8pt  marge des pastilles ; 8pt de marge interne, d'où le départ à 16pt
+//   32pt  hauteur des lignes, texte à 14pt ; compteurs alignés à droite
+
+@brume-sidebar-pad: (@brume-sidebar-gutter - @brume-sidebar-pill-inset); // 8pt
+@brume-sidebar-glyph: 16px; // place du triangle, devant l'icône
+
+// Compteurs : la base leur impose 15px de haut ; avec une hauteur de ligne plus grande,
+// les chiffres débordaient vers le bas. Capsule en flex, hauteur de ligne de 1 : les
+// chiffres sont centrés optiquement, quelle que soit la taille.
+.brume-badge(@h: 18px) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: @h;
+  min-width: @h + 2px;
+  padding: 0 6px;
+  line-height: 1;
+  font-size: @font-size-smaller;
+  font-variant-numeric: tabular-nums;
+  border-radius: @brume-capsule;
+}
+
+//============================ Surfaces ================================//
+
+.column-RootSidebar,
+.account-sidebar,
+:where(.nav-rail-content) .account-sidebar {
+  background-color: @brume-sidebar-bg;
+}
+.account-sidebar {
+  position: relative;
+  color: @brume-sidebar-text;
+}
+
+// Activité de synchronisation, en bas de la barre latérale.
+.sidebar-activity {
+  background: @brume-sidebar-bg;
+  color: @brume-sidebar-text;
+  box-shadow: inset 0 1px 0 @brume-sidebar-hairline;
+  .item .inner {
+    border-bottom-color: @brume-sidebar-hairline;
+  }
+}
+
+.column-RootSidebar .scrollbar-track {
+  .scrollbar-handle {
+    background-color: @brume-sidebar-scroll;
+  }
+  &:hover .scrollbar-handle,
+  &.dragging .scrollbar-handle {
+    background-color: @brume-sidebar-scroll-hover;
+  }
+}
+
+//============================ Contenu =================================//
+
+.outline-view {
+  margin-bottom: 4px;
+
+  section {
+    margin-bottom: 0;
+  }
+
+  // Intitulés de section, posés sur la colonne de départ.
+  .heading {
+    display: flex;
+    align-items: center;
+    height: 32px;
+    padding: 10px @brume-sidebar-gutter 0;
+    margin: 0;
+    color: @brume-sidebar-heading;
+    font-size: @font-size-smaller;
+    line-height: 1;
+    font-weight: @font-weight-semi-bold;
+    letter-spacing: 0;
+    .add-item-button {
+      margin-right: 0;
+      img {
+        background: @brume-sidebar-heading;
+      }
+    }
+    .collapse-button {
+      color: @brume-sidebar-heading;
+      margin-right: 0;
+      min-width: 0;
+    }
+  }
+
+  // Lignes : une pastille par ligne. Le triangle est à l'intérieur de la pastille, sur
+  // la colonne de départ ; toutes les icônes s'alignent derrière lui, qu'il soit
+  // visible ou non.
+  .item-container {
+    position: relative;
+    margin: 1px @brume-sidebar-pill-inset;
+  }
+
+  .disclosure-triangle {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    left: @brume-sidebar-pad;
+    width: @brume-sidebar-glyph;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    div {
+      border-left-color: @brume-sidebar-heading;
+      border-top-width: 3.5px;
+      border-bottom-width: 3.5px;
+      border-left-width: 6px;
+      transform-origin: 3px 50%;
+    }
+  }
+
+  .item {
+    height: @brume-sidebar-row-height;
+    padding: 0 @brume-sidebar-pad 0 (@brume-sidebar-pad + @brume-sidebar-glyph);
+    border-radius: @brume-sidebar-pill-radius;
+    color: @brume-sidebar-text;
+    font-size: @font-size;
+    font-weight: @font-weight-normal;
+    transition: background-color 120ms ease-out;
+
+    img.content-mask {
+      background-color: @brume-sidebar-icon;
+    }
+    .icon {
+      padding-right: 8px;
+    }
+    .name {
+      flex: 0 1 auto;
+    }
+
+    // Compteurs : alignés à droite, en texte ; le compteur "plein" est une capsule.
+    .item-count-box {
+      .brume-badge();
+      margin-left: auto;
+      box-shadow: none;
+      background: transparent;
+      color: @brume-sidebar-count;
+      font-weight: @font-weight-medium;
+    }
+    .item-count-box.alt-count {
+      background: @brume-accent;
+      color: @brume-on-accent;
+    }
+
+    .item-action-button {
+      margin-left: 6px;
+      color: @brume-sidebar-heading;
+      &:hover {
+        color: @brume-sidebar-strong;
+        background: @brume-sidebar-hover;
+      }
+    }
+
+    &:hover:not(.selected) {
+      background-color: @brume-sidebar-hover;
+    }
+
+    &.selected {
+      background: @brume-sidebar-selected-bg;
+      box-shadow: inset 0 1px 0 @brume-sidebar-selected-rim;
+      color: @brume-sidebar-selected-text;
+      font-weight: @font-weight-medium;
+      img.content-mask {
+        background-color: @brume-sidebar-selected-icon;
+      }
+      .item-count-box {
+        color: @brume-sidebar-selected-count;
+      }
+      // Le compteur rempli garde son contraste sur la ligne sélectionnée
+      // (sans cette règle, le chiffre prenait la couleur de son propre fond).
+      .item-count-box.alt-count {
+        background: @brume-accent;
+        color: @brume-on-accent;
+      }
+    }
+
+    &.dropping {
+      background-color: @brume-sidebar-drop-bg;
+      color: @brume-sidebar-selected-text;
+    }
+
+    // Champ de renommage d'un dossier
+    &.editing .item-input {
+      background: @brume-sidebar-input-bg;
+      color: @brume-sidebar-strong;
+      border-color: @accent-primary;
+    }
+  }
+
+  // Sous-niveaux : la pastille garde toute sa largeur, seul le contenu se décale.
+  .item-children {
+    padding-left: 0;
+    .disclosure-triangle {
+      left: @brume-sidebar-pad + 14px;
+    }
+    .item {
+      padding-left: @brume-sidebar-pad + @brume-sidebar-glyph + 14px;
+    }
+    .item-children {
+      .disclosure-triangle {
+        left: @brume-sidebar-pad + 28px;
+      }
+      .item {
+        padding-left: @brume-sidebar-pad + @brume-sidebar-glyph + 28px;
+      }
+    }
+  }
+
+  .item-container.dropping {
+    background-color: transparent;
+    .item {
+      background-color: @brume-sidebar-drop-bg;
+      color: @brume-sidebar-selected-text;
+      img.content-mask {
+        background-color: @brume-sidebar-selected-icon;
+      }
+    }
+  }
+}
+
+// Sélecteur de compte : chevron dessiné en masque (l'image d'origine est opaque),
+// centré sur le premier intitulé.
+// Le chevron (10pt) est centré dans un disque de 22pt : bord droit du disque à 10pt du
+// bord, bord droit du chevron à 16pt, comme les compteurs et le bouton de composition.
+.account-sidebar .account-switcher {
+  top: 10px;
+  right: @brume-sidebar-gutter - 6px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  opacity: 1;
+  transition: background 120ms ease-out;
+  &:hover {
+    background: @brume-sidebar-hover;
+  }
+  img {
+    zoom: 1 !important;
+    width: 10px !important;
+    height: 6px !important;
+    transform: none;
+    object-position: 10000px;
+    background-color: @brume-sidebar-heading;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 10px 6px;
+    -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M1 1l4 4 4-4"/></svg>');
+  }
+  &:hover img {
+    background-color: @brume-sidebar-strong;
+  }
+}
+
+//=========================== Rail de navigation ======================//
+// Calendrier, contacts... : même surface et même grammaire que la barre latérale.
+
+.nav-rail-frame,
+.sheet-container .sheet-toolbar ~ .nav-rail-frame,
+.sheet-toolbar:has(+ .nav-rail-frame) .sheet-toolbar-container {
+  background: @brume-sidebar-bg;
+}
+.nav-rail {
+  background-color: @brume-sidebar-bg;
+  .nav-rail-item {
+    border-radius: @brume-sidebar-pill-radius;
+    img.content-mask {
+      background-color: @brume-sidebar-icon;
+    }
+    &:hover {
+      background: @brume-sidebar-hover;
+    }
+    &.active {
+      background: @brume-sidebar-selected-bg;
+      box-shadow: inset 0 1px 0 @brume-sidebar-selected-rim;
+    }
+    &.active img.content-mask {
+      background-color: @brume-sidebar-selected-icon;
+    }
+  }
+  .nav-rail-section::before {
+    border-top-color: @brume-sidebar-hairline;
+  }
+}

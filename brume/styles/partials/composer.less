@@ -1,0 +1,287 @@
+// Composeur : fenêtre "New Message" et réponses intégrées au fil.
+//
+// Lecture Liquid Glass :
+// - en-tête calme : libellés discrets, filets à peine visibles, aucun cadre ;
+// - barre de mise en forme en "plateau" arrondi plutôt qu'entre deux traits ;
+// - barre d'actions en capsule flottante en bas, comme les barres d'outils de macOS 26 ;
+// - rayons concentriques : plateau 14pt, boutons 10pt (4pt de marge), sur l'échelle
+//   de rayons du thème.
+
+@brume-tray: @brume-fill-opaque; // doit rester opaque : la barre flotte sur le texte
+@brume-tray-hover: @brume-fill;
+@brume-tray-radius: @brume-radius-l;
+@brume-tray-inset: 4px; // 14 - 4 = 10 : @brume-radius-m pour les boutons
+@brume-label: @brume-icon; // libellés "To:", "From:" : 3,6:1, lisible sans crier
+
+//============================== Fenêtre ==============================//
+
+// Barre de titre du composeur : même blanc que le contenu, sans filet.
+body.window-type-composer {
+  .sheet-toolbar-container,
+  &.is-blurred .sheet-toolbar-container {
+    background: @brume-paper;
+  }
+  .sheet-toolbar .window-title {
+    font-size: @font-size-small;
+    color: @text-color-subtle;
+  }
+}
+
+//============================== En-tête ==============================//
+
+.composer-inner-wrap {
+  .composer-field-label {
+    color: @brume-label;
+  }
+
+  // Filets entre les champs : présents mais quasi invisibles.
+  .composer-participant-field:after,
+  .composer-subject:after {
+    background: @brume-hairline;
+  }
+
+  // Cc, Bcc, Reply-To : liens discrets.
+  .composer-header-actions .action {
+    color: @brume-label;
+    transition: color 120ms ease-out;
+    img.content-mask {
+      background-color: @brume-label;
+    }
+    &:hover {
+      color: @accent-primary;
+      img.content-mask {
+        background-color: @accent-primary;
+      }
+    }
+  }
+
+  // Objet : un peu plus présent que le reste de l'en-tête.
+  .composer-subject input {
+    font-weight: @font-weight-medium;
+    &::-webkit-input-placeholder {
+      color: @brume-label;
+      font-weight: @font-weight-normal;
+    }
+  }
+}
+
+// Expéditeur : capsule teintée au lieu d'une boîte encadrée.
+.composer-participant-field .button-dropdown {
+  .primary-item,
+  .only-item {
+    background: @brume-tray;
+    box-shadow: none;
+    border: 0;
+    border-radius: @brume-capsule;
+    padding: 0 12px;
+    transition: background 120ms ease-out;
+    &:hover {
+      background: @brume-fill-opaque-strong;
+    }
+  }
+  .primary-item {
+    border-radius: @brume-capsule 0 0 @brume-capsule;
+  }
+  .secondary-picker {
+    background: @brume-tray;
+    box-shadow: none;
+    border: 0;
+    border-left: 1px solid @brume-hairline;
+  }
+  img {
+    background-color: @text-color-subtle;
+  }
+  // La base remet des coins carrés au survol : on garde la capsule.
+  &:hover {
+    .primary-item,
+    .only-item {
+      border-radius: @brume-capsule;
+    }
+    .primary-item {
+      border-radius: @brume-capsule 0 0 @brume-capsule;
+    }
+  }
+}
+
+//======================== Barre de mise en forme =====================//
+
+.RichEditor-toolbar {
+  font-family: @font-family;
+  font-size: @font-size-small;
+
+  .floating-container {
+    border-bottom: 0;
+    padding: 6px 16px 4px;
+  }
+
+  .inner {
+    background: @brume-tray;
+    border-radius: @brume-tray-radius;
+    padding: @brume-tray-inset;
+    gap: 2px;
+  }
+
+  button {
+    border-radius: @brume-tray-radius - @brume-tray-inset;
+    color: @brume-icon;
+    transition: background 120ms ease-out, color 120ms ease-out;
+    &:hover {
+      background: @brume-tray-hover;
+      color: @brume-ink;
+    }
+    &.with-select select {
+      font-family: @font-family;
+      font-size: @font-size-small;
+      color: inherit;
+    }
+  }
+
+  button.active {
+    background: @brume-accent-soft;
+    color: @accent-primary;
+  }
+
+  .divider {
+    height: 16px;
+    border-right-color: @brume-hairline-strong;
+    margin: 0 4px;
+    padding-right: 0;
+  }
+
+  // Couleur du texte : pastille ronde au lieu d'un rectangle cerclé de noir.
+  .color-picker > button {
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    margin: 0 6px 1px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0.5px @brume-control-border, 0 0 0 2.5px @brume-tray,
+      0 0 0 3px @brume-hairline-strong;
+  }
+
+  // Menus déroulants de la barre (lien, couleur) : verre, comme les autres calques.
+  .dropdown {
+    border-radius: @brume-radius-l;
+    background-color: @brume-glass-fill;
+    -webkit-backdrop-filter: @brume-glass-blur;
+    backdrop-filter: @brume-glass-blur;
+    box-shadow: @brume-glass-edge, @brume-glass-shadow;
+  }
+}
+
+// Le composeur intégré au fil force le fond du plateau : on garde le nôtre.
+#message-list .message-item-wrap .message-item-white-wrap.composer-outer-wrap {
+  .RichEditor-toolbar .inner,
+  &.focused .RichEditor-toolbar .inner {
+    background: @brume-tray;
+  }
+}
+
+//========================== Barre d'actions ==========================//
+// La barre devient une capsule flottante posée sur le blanc du composeur.
+
+.composer-inner-wrap .composer-action-bar-wrap,
+.composer-full-window .composer-inner-wrap .composer-action-bar-wrap,
+#message-list .message-item-wrap .message-item-white-wrap.composer-outer-wrap .composer-action-bar-wrap,
+#message-list .message-item-wrap .message-item-white-wrap.composer-outer-wrap.focused .composer-action-bar-wrap {
+  background: transparent;
+  border-top: 0;
+  box-shadow: none;
+  padding: 6px 12px 12px;
+
+  // Cache animé qui masque les plugins pendant leur chargement : doit épouser la capsule.
+  .action-bar-cover {
+    background-image: linear-gradient(to right, fade(@brume-tray, 0%) 0%, @brume-tray 10%);
+  }
+}
+
+.composer-inner-wrap .composer-action-bar-content,
+.composer-full-window .composer-inner-wrap .composer-action-bar-content {
+  align-items: center;
+  padding: 6px;
+  background: @brume-tray;
+  border-radius: @brume-capsule;
+  box-shadow: inset 0 0 0 0.5px @brume-hairline;
+}
+
+.composer-inner-wrap .composer-action-bar-wrap {
+  .btn.btn-toolbar:not(.btn-emphasis) {
+    height: 32px;
+    line-height: 32px;
+    min-width: 32px;
+    padding: 0 8px;
+    border-radius: @brume-capsule;
+    transition: background 120ms ease-out;
+
+    img.content-mask {
+      background-color: @brume-icon;
+    }
+    &:hover {
+      background: @brume-tray-hover;
+      img.content-mask {
+        background-color: @brume-ink;
+      }
+    }
+    // Option activée (suivi d'ouverture, de clics...) : pastille d'accent.
+    &.btn-enabled {
+      background: @brume-accent-soft;
+      img.content-mask {
+        background-color: @accent-primary;
+      }
+    }
+  }
+
+  // Envoyer : capsule pleine hauteur, alignée sur les autres boutons.
+  .btn-send {
+    margin-right: 8px;
+    .primary-item,
+    .secondary-picker,
+    .only-item {
+      height: 32px;
+      line-height: 32px;
+    }
+    .primary-item {
+      padding: 0 16px 0 14px;
+    }
+    .secondary-picker {
+      padding: 0 10px 0 8px;
+    }
+    img.content-mask {
+      background-color: @btn-emphasis-text-color;
+    }
+  }
+}
+
+//=========================== Glisser-déposer =========================//
+
+.composer-inner-wrap .composer-drop-cover {
+  background: fade(@brume-paper, 85%);
+  border: 2px dashed color-mix(in oklab, @brume-accent-var 45%, transparent);
+  border-radius: @brume-radius-l;
+  .centered {
+    color: @accent-primary;
+    img {
+      background-color: @accent-primary;
+    }
+  }
+}
+
+//======================== Réponse intégrée au fil ====================//
+// La base teinte en crème le composeur non focalisé et ajoute une lueur d'accent au
+// focus : on garde la carte blanche du thème, et un anneau d'accent doux au focus.
+#message-list .message-item-wrap .message-item-white-wrap.composer-outer-wrap {
+  background: @brume-paper;
+  .show-more-fade {
+    background: linear-gradient(to right, fade(@brume-paper, 0%) 0%, @brume-paper 40%);
+  }
+  .signature-button-dropdown .only-item {
+    background: transparent;
+  }
+  &.focused {
+    background: @brume-paper;
+    box-shadow: @brume-card-shadow, 0 0 0 3px @brume-accent-ring;
+    .show-more-fade {
+      background: linear-gradient(to right, fade(@brume-paper, 0%) 0%, @brume-paper 40%);
+    }
+  }
+}
