@@ -34,12 +34,23 @@ function clearKeyboardCursor(collection) {
   }
 }
 
+// Élément sous le pointeur à l'appui. Chromium envoie le "click" à l'ancêtre commun de
+// l'appui et du relâchement : un clic qui glisse d'une ligne à l'autre (ou des lignes qui
+// bougent pendant le clic, à l'arrivée d'un message) tomberait sur le conteneur de la
+// liste et passerait pour un clic dans le vide. On n'agit que si les deux coïncident.
+let pointerDownTarget = null;
+
+function onPointerDown(event) {
+  pointerDownTarget = event.target;
+}
+
 function onClick(event) {
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
     return;
   }
   const target = event.target;
   if (!(target instanceof Element)) return;
+  if (pointerDownTarget !== target) return;
 
   const list = LISTS.find((l) => target.closest(l.selector));
 
@@ -74,9 +85,11 @@ function onClick(event) {
 module.exports = {
   activate() {
     if (!AppEnv.isMainWindow()) return;
+    document.addEventListener('pointerdown', onPointerDown, true);
     document.addEventListener('click', onClick);
   },
   deactivate() {
+    document.removeEventListener('pointerdown', onPointerDown, true);
     document.removeEventListener('click', onClick);
   },
 };

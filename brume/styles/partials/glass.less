@@ -133,6 +133,20 @@
 .button-dropdown.open.open-down .secondary-items {
   transform: translate(0, 6px);
 }
+// Menu sans aucune entrée (Envoyer d'un nouveau message : la seule variante, "Send and
+// Archive", exige un fil) : pas de bulle vide de 12pt. Limité à Envoyer : le menu des
+// signatures, vide sans signature, garde son en-tête et son pied ("Edit Signatures…").
+.button-dropdown.btn-send .secondary-items:has(.content-container.empty) {
+  display: none;
+}
+// Ouverture vers le haut : la base place le menu à "top: -100%" (une hauteur de bouton
+// au-dessus), si bien qu'un menu de plus d'une ligne recouvre le bouton. Ancré par le
+// bas, il s'ouvre entièrement au-dessus, quelle que soit sa hauteur.
+.button-dropdown.open.open-up .secondary-items {
+  top: auto;
+  bottom: 100%;
+  transform: translate(0, -6px);
+}
 .button-dropdown .secondary-items {
   .brume-glass();
   .brume-glass-children();

@@ -110,6 +110,55 @@ body.is-blurred .toolbar-ThreadList .thread-search-bar {
   box-shadow: none;
 }
 
+// Loupe et bouton d'effacement : images de Mailspring affichées telles quelles (loupe
+// pâle au tracé propre, disque gris d'un autre dessin). Remplacées par les pictogrammes
+// du thème, au gris des icônes. L'image d'origine est décalée hors de sa boîte, comme
+// pour les masques. Vaut pour toutes les recherches (liste, calendrier, contacts).
+img[src*='/searchloupe@'] {
+  object-position: 10000px;
+  background-color: @brume-icon;
+  .brume-mask(@brume-glyph-search);
+}
+img[src*='/searchclear@'] {
+  object-position: 10000px;
+  background-color: fade(@brume-ink, 48%); // 3:1 sur le champ (commande, WCAG 1.4.11)
+  .brume-mask(@brume-glyph-search-clear);
+  transition: background-color 120ms ease-out;
+  &:hover {
+    background-color: @brume-icon;
+  }
+}
+
+.thread-search-bar {
+  .search-accessory.search:not(.loading) {
+    width: 16px;
+    height: 16px;
+  }
+  .search-accessory.clear {
+    width: 16px;
+    height: 16px;
+    margin-left: 4px;
+  }
+}
+// Recherche en cours (liste et calendrier) : roue fine du thème (comme "Checking for
+// mail") au lieu de l'animation GIF de Mailspring.
+.thread-search-bar,
+.event-search-bar {
+  .search-accessory.loading {
+    width: 14px;
+    height: 14px;
+    margin: 1px;
+    box-sizing: border-box;
+    object-position: 10000px;
+    border: 1.5px solid @brume-hairline-strong;
+    border-top-color: @accent-primary;
+    border-radius: 50%;
+    animation: brume-spin 0.8s linear infinite;
+  }
+}
+
+@brume-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10' fill='none' stroke='%231f2230' stroke-opacity='0.64' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 3.8 5 6.8 8 3.8'/%3E%3C/svg%3E");
+
 // Listes déroulantes natives (<select>) : pastille arrondie remplie, chevron dessiné,
 // anneau de focus du thème. La base les laisse rectangulaires, cerclées d'un trait, et
 // le contour de focus suivait cet angle droit. Les listes de la barre de mise en forme
@@ -122,7 +171,7 @@ select:not(.RichEditor-toolbar select) {
   border: 0;
   border-radius: @brume-radius-s;
   background-color: @brume-paper;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10' fill='none' stroke='%231f2230' stroke-opacity='0.64' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 3.8 5 6.8 8 3.8'/%3E%3C/svg%3E");
+  background-image: @brume-select-chevron;
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 10px 10px;

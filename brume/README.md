@@ -37,6 +37,7 @@ Pour itérer : modifier les fichiers copiés dans `~/Library/Application Support
 | Contenu | `#ffffff` | |
 | Lecture | `#f7f7fb` | |
 | Sauge, pêche, rose, ciel | `#2e7a55`, `#a2561f`, `#b13a4e`, `#2d6c9c` | AA sur blanc |
+| Sauge et pêche foncées | `@brume-sage-strong`, `@brume-peach-strong` | AA sur leurs aplats pastel |
 
 Les aplats pastel (sélection, survol) sont calculés à partir de l'accent avec `color-mix()` : changer l'accent recolore tout.
 
@@ -58,6 +59,7 @@ Toutes les règles (`styles/partials/`) n'utilisent que des jetons définis dans
 | Neutres | `@brume-fill-subtle` (4%), `@brume-fill` (6%), `@brume-fill-opaque`, `-opaque-strong`, `-opaque-pressed`, `@brume-hairline` (8%), `@brume-hairline-strong` (14%), `@brume-icon` (64%), `@brume-control-border` (30%), `@brume-scroll` |
 | Accent dérivé | `@brume-accent-soft`, `@brume-accent-softer`, `@brume-accent-sidebar`, `@brume-accent-ring` (calculés à l'exécution depuis `--brume-accent`) |
 | Rayons | `@brume-radius-xs` 6, `-s` 8, `-m` 10, `-l` 14, `-xl` 20, `@brume-capsule` |
+| Pictogrammes | `@brume-glyph-*` : trait fin de 1,2pt à la taille d'affichage, grille 24, en masque (la couleur vient du fond de l'élément) |
 | Ombres | `@brume-ring`, `@brume-card-shadow`, `@brume-card-shadow-down`, `@brume-capsule-edge`, `@brume-glass-*` |
 | Barre latérale | `@brume-sidebar-*` (fond, texte, icônes, compteurs, survol, sélection, glisser-déposer, carte d'activité, roue de progression, alerte hors ligne), `@brume-toolbar-bg`, `@brume-compose-*` |
 | Menus | `@brume-menu-selected-bg`, `-text`, `-secondary` |
@@ -83,6 +85,12 @@ styles/
     composer.less          fenêtre "New Message" et réponses intégrées
     components.less        suggestions, jetons, pièces jointes, toasts, bandeaux,
                            reporter, interrupteurs, préférences, calendrier
+    glyphs.less            pictogrammes au trait fin (généré, une variable par taille)
+    icons.less             remplacement des icônes de Mailspring par ces pictogrammes
+    features.less          fonctions de Mailspring : invitations, bandeaux, recherche
+                           dans le fil, correcteur, envoi différé, dossiers vides
+    preferences.less       listes et panneaux des Préférences, choix du thème,
+                           fenêtres Pro, didacticiel
     accessibility.less     préférences système
 ```
 
@@ -94,5 +102,6 @@ Un clic dans la zone vide de la liste ferme le message ouvert et décoche la sé
 
 - La fenêtre de Mailspring est opaque : le bureau ne transparaît pas derrière la barre latérale, contrairement aux apps natives. Un thème ne peut pas activer la vibrance d'Electron.
 - Pas de réfraction (effet "lentille") : CSS ne sait faire que du flou, ce qui reste plus lisible de toute façon.
-- Corps des e-mails non retouchés : ils gardent leur propre mise en forme.
+- Corps des e-mails non retouchés : Mailspring les affiche dans un cadre isolé que les thèmes n'atteignent pas.
+- Fenêtre de configuration d'un compte : Mailspring y désactive volontairement les thèmes.
 - Pensé pour macOS. Sous Windows et Linux, il fonctionne mais les capsules de la barre d'outils sont propres à macOS.

@@ -1,0 +1,315 @@
+// Fenêtres de réglages et fenêtres annexes : Préférences (listes, comptes, abonnement,
+// règles, dossiers, MCP), choix du thème, fenêtres "fonction Pro épuisée", bulles du
+// didacticiel. La base y garde des cadres à angles vifs collés les uns aux autres, des
+// gris neutres et des dégradés : cartes arrondies au filet discret, teintes du thème.
+
+//===================== Listes éditables ================================//
+// Comptes, signatures, modèles, règles : liste et barre "+ / −" forment une seule carte.
+// Sélection en pastille d'accent doux (comme la liste des fils) au lieu d'un gris
+// translucide à texte inversé.
+.nylas-editable-list {
+  .items-wrapper {
+    border: 0;
+    border-radius: @brume-radius-m @brume-radius-m 0 0;
+    background-color: @brume-paper;
+    box-shadow: 0 0 0 1px @brume-hairline-strong;
+    padding: 4px 0;
+
+    .editable-item {
+      margin: 1px 4px;
+      padding: 5px 10px;
+      border-bottom: 0;
+      border-radius: @brume-radius-xs;
+
+      & > input {
+        color: @brume-ink;
+      }
+    }
+    .selected,
+    .selected.editing {
+      background-color: @brume-accent-soft;
+      color: @brume-ink;
+    }
+    .editable-item.selected.with-edit-icon img.edit-icon {
+      background-color: @accent-primary;
+    }
+    .create-item-input > input {
+      margin: 1px 4px;
+      border-bottom: 0;
+      border-radius: @brume-radius-xs;
+      box-shadow: inset 0 0 0 1px @accent-primary;
+    }
+  }
+  &:focus .items-wrapper .selected,
+  .items-wrapper .selected.editing {
+    background-color: @brume-accent-soft;
+    color: @brume-ink;
+  }
+
+  .buttons-wrapper {
+    border: 0;
+    border-radius: 0 0 @brume-radius-m @brume-radius-m;
+    background-color: @brume-fill-opaque;
+    box-shadow: 0 0 0 1px @brume-hairline-strong;
+    overflow: hidden;
+
+    .btn-editable-list {
+      border-right: 1px solid @brume-hairline;
+      color: @brume-icon;
+      transition: background 120ms ease-out;
+      &:hover {
+        background-color: @brume-fill-opaque-strong;
+        color: @brume-ink;
+      }
+      &:active {
+        background-color: @brume-fill-opaque-pressed;
+        box-shadow: none;
+      }
+    }
+  }
+}
+
+//===================== Panneaux de détail ==============================//
+// Panneau à droite d'une liste (compte, règle) : la base le colle à la liste (sans
+// bordure gauche) sur un gris neutre. Carte détachée, sur le fond du thème.
+.preferences-wrap .container-accounts .accounts-content .account-details,
+.container-mail-rules .rule-detail {
+  margin-left: 12px;
+  border: 0;
+  border-radius: @brume-radius-m;
+  background-color: @brume-paper;
+  box-shadow: 0 0 0 1px @brume-hairline-strong;
+  overflow: hidden;
+}
+.preferences-wrap .container-accounts .accounts-content .account-list .account {
+  border-bottom: 0;
+}
+
+// Erreur de compte : dégradé rouge et boutons blancs translucides ; bandeau rose doux,
+// actions en capsules. Hors ligne : pêche au lieu du gris neutre.
+.preferences-wrap .container-accounts .accounts-content .account-details .account-error-detail {
+  margin-bottom: 12px;
+  border-radius: @brume-radius-m;
+  background: @brume-rose-soft;
+  overflow: hidden;
+
+  .message {
+    padding: 8px 12px 4px;
+    color: @brume-rose;
+  }
+  .action {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    height: @brume-header-control;
+    margin: 4px 0 8px 12px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: @brume-capsule;
+    background-color: fade(@brume-paper, 70%);
+    color: @brume-rose;
+    font-weight: @font-weight-medium;
+    &:hover {
+      background-color: @brume-paper;
+    }
+  }
+  &.offline {
+    background: @brume-peach-soft;
+    .message,
+    .action {
+      color: @brume-peach-strong;
+    }
+  }
+}
+
+// Règles de tri.
+.container-mail-rules {
+  .empty-list {
+    border: 0;
+    border-radius: @brume-radius-m;
+    background-color: @brume-paper;
+    box-shadow: 0 0 0 1px @brume-hairline-strong;
+  }
+  .rule-detail {
+    .disabled-reason {
+      border-bottom: 0;
+      background-color: @brume-rose-soft;
+      color: @brume-rose;
+    }
+    .well {
+      border: 0;
+      border-radius: @brume-radius-s;
+      box-shadow: 0 0 0 1px @brume-hairline-strong;
+      .well-row {
+        border-bottom-color: @brume-hairline;
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
+    }
+  }
+  .footer {
+    border-top-color: @brume-hairline;
+    background-color: transparent;
+  }
+}
+
+// Signatures et modèles : sections en cartes, aperçu arrondi comme le reste.
+.preferences-signatures-container,
+.preferences-templates-container {
+  .empty-list,
+  .section:not(.basic-info) {
+    border-color: @brume-hairline-strong;
+    border-radius: @brume-radius-m;
+  }
+  .signature-template-picker {
+    border-radius: @brume-radius-m;
+    background: @brume-fill-opaque;
+    .option {
+      border-color: @brume-hairline-strong;
+      border-radius: @brume-radius-s;
+    }
+  }
+}
+
+//===================== Abonnement (Mailspring Pro) =====================//
+// Bouton en dégradé violet écrit en dur : bouton principal du thème. Cartes de
+// fonctions à ombre noire et liseré gauche : cartes de Brume.
+.container-identity .identity-content-box {
+  .subscription-actions {
+    border: 0;
+    border-radius: @brume-radius-l;
+    box-shadow: @brume-card-shadow;
+
+    .btn.btn-emphasis,
+    .btn.btn-emphasis:active {
+      border: 0;
+      border-radius: @brume-capsule;
+      background: @btn-emphasis-bg-color;
+      color: @btn-emphasis-text-color;
+    }
+    .btn.btn-emphasis:hover {
+      background: @brume-emphasis-bg-hover;
+    }
+  }
+}
+.container-identity {
+  .feature-explore-grid .feature {
+    border-left: 0;
+    border-radius: @brume-radius-l;
+    box-shadow: @brume-card-shadow;
+    &:hover {
+      transform: translate(0, -2px);
+      box-shadow: @brume-ring, 0 8px 20px -8px fade(@brume-ink, 22%);
+    }
+  }
+}
+
+//===================== Dossiers (correspondance des rôles) =============//
+.category-mapper-container {
+  .account-section-title {
+    border-bottom-color: @brume-hairline;
+  }
+}
+.category-mapper-container input.search {
+  border: 0;
+  border-radius: @brume-capsule;
+  box-shadow: inset 0 0 0 1px @brume-hairline-strong;
+  background-color: @brume-paper;
+}
+
+//===================== Serveur MCP =====================================//
+.container-mcp {
+  .mcp-status {
+    border-radius: @brume-capsule;
+    padding: 1px 8px;
+  }
+  .mcp-error,
+  .mcp-endpoint,
+  .mcp-token,
+  .mcp-try-it-prompt {
+    border-radius: @brume-radius-s;
+  }
+  .mcp-error {
+    background: @brume-rose-soft;
+    color: @brume-rose;
+  }
+  .mcp-accounts-list,
+  .mcp-audit-table {
+    border-color: @brume-hairline-strong;
+    border-radius: @brume-radius-m;
+  }
+  // Coins nets pour la liste des comptes ; le journal garde son défilement (auto).
+  .mcp-accounts-list {
+    overflow: hidden;
+  }
+}
+
+//===================== Choix du thème ==================================//
+// La fenêtre garde des valeurs fixes (noir #111, blanc, gris #ccc) : textes et listes
+// du thème, coins arrondis.
+.theme-picker {
+  .auto-theme-selectors .auto-theme-selector {
+    label {
+      color: @text-color-subtle;
+      font-size: @font-size-smaller;
+    }
+    // Listes du thème (controls.less) : la base de cette fenêtre, plus précise, efface
+    // le fond et le chevron ; on les rétablit.
+    select {
+      border: 0;
+      border-radius: @brume-radius-s;
+      background-color: @brume-paper;
+      background-image: @brume-select-chevron; // effacé par le "background: white" de la base
+      box-shadow: inset 0 0 0 1px @brume-hairline-strong;
+      color: @brume-ink;
+    }
+  }
+  .clickable-theme-option iframe {
+    border-radius: @brume-radius-s;
+  }
+  .create-theme a {
+    color: @accent-primary;
+  }
+}
+
+//===================== Fenêtres "fonction Pro épuisée" =================//
+// Bandeau en dégradé (violet, bleu ou orange selon la fonction) : aplat d'accent du
+// bouton principal. Il reste plein : les illustrations du bandeau sont blanches.
+// [class] : les variantes de la base ajoutent une classe par fonction (.send-later...).
+.feature-usage-modal[class] {
+  .feature-header {
+    border-radius: @brume-radius-xl @brume-radius-xl 0 0;
+    background: @btn-emphasis-bg-color;
+    color: @btn-emphasis-text-color;
+  }
+  .feature-header .header-text {
+    color: @btn-emphasis-text-color;
+  }
+  .recharge-text {
+    color: @btn-emphasis-text-color;
+    opacity: 0.85;
+  }
+  .pro-description ul,
+  .pro-description p {
+    color: @text-color-subtle;
+  }
+  .pro-description li::before {
+    color: @brume-sage;
+  }
+}
+
+//===================== Didacticiel =====================================//
+// Pastille en dégradé rose-violet à onde violette : accent du thème.
+.tutorial-tip {
+  border: 2px solid @brume-paper;
+  background-image: none;
+  background-color: @accent-primary;
+  box-shadow: 0 1px 3px fade(@brume-ink, 25%);
+}
+.tutorial-tip.visible:after {
+  border-color: @accent-primary;
+}
+tutorial-tip-background {
+  background-color: fade(@brume-ink, 22%);
+}

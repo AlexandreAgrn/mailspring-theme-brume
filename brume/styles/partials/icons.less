@@ -1,0 +1,311 @@
+// Icônes : pictogrammes "trait fin" (glyphs.less) à la place de ceux de Mailspring qui
+// détonnent (flèches pleines, traits épais, aplats, couleurs vives). Ceux qui sont déjà
+// fins (barre latérale, archiver, supprimer, étiquette, reporter...) sont conservés.
+//
+// Trois façons dont Mailspring affiche une icône, trois façons de la remplacer :
+// 1. Image en masque (classe content-mask) : Mailspring pose l'image en masque en style
+//    en ligne et décale l'image elle-même hors de la boîte (object-position) ; seule la
+//    couleur de fond apparaît. On remplace le masque, d'où !important. L'image est
+//    reconnue par son nom de fichier : si Mailspring en renomme une, l'icône d'origine
+//    revient, sans rien casser.
+// 2. Image affichée telle quelle (crayon des brouillons) : même principe, en décalant
+//    l'image hors de la boîte comme le fait Mailspring pour les masques.
+// 3. Image de fond (icônes d'état de la liste, actions au survol) : remplacée par un
+//    masque sur l'élément, teinté par background-color.
+// 4. Police Font Awesome (barre de mise en forme du composeur) : le caractère est
+//    remplacé par un masque, ou par une lettre dans la police du système.
+
+.brume-mask(@glyph) {
+  -webkit-mask-image: @glyph !important;
+  -webkit-mask-size: contain !important;
+  -webkit-mask-position: center !important;
+  -webkit-mask-repeat: no-repeat !important;
+}
+
+// Chaque image est reconnue par son nom de fichier suivi de @ (@2x ou @1x) : Mailspring
+// fournit toutes ces images en version @2x, et le chemin contient leur dossier.
+
+//======================= 1. Images en masque ===========================//
+
+// Répondre, répondre à tous, transférer : menu "…" et bouton de la ligne de l'expéditeur.
+img.content-mask[src*='/ic-dropdown-reply@'] {
+  .brume-mask(@brume-glyph-reply);
+}
+img.content-mask[src*='/ic-dropdown-replyall@'] {
+  .brume-mask(@brume-glyph-reply-all);
+}
+img.content-mask[src*='/ic-dropdown-forward@'] {
+  .brume-mask(@brume-glyph-forward);
+}
+
+// Zone "Write a reply…" : la flèche seule, sans le cercle.
+img.content-mask[src*='/reply-footer@'] {
+  .brume-mask(@brume-glyph-reply-19);
+}
+img.content-mask[src*='/reply-all-footer@'] {
+  .brume-mask(@brume-glyph-reply-all-19);
+}
+
+// Barre d'outils.
+img.content-mask[src*='/toolbar-movetofolder@'] {
+  .brume-mask(@brume-glyph-move-to-folder);
+}
+img.content-mask[src*='/toolbar-spam@'] {
+  .brume-mask(@brume-glyph-thumb-down);
+}
+img.content-mask[src*='/toolbar-not-spam@'] {
+  .brume-mask(@brume-glyph-thumb-up);
+}
+img.content-mask[src*='/toolbar-markasread@'] {
+  .brume-mask(@brume-glyph-mark-read);
+}
+img.content-mask[src*='/toolbar-markasunread@'] {
+  .brume-mask(@brume-glyph-mark-unread);
+}
+img.content-mask[src*='/toolbar-sidebar-right@'] {
+  .brume-mask(@brume-glyph-sidebar);
+}
+
+// Barre latérale : "Non lus" et "Indésirables" reprennent les icônes de la barre d'outils.
+img.content-mask[src*='/source-list/unread@'] {
+  .brume-mask(@brume-glyph-mark-unread);
+}
+img.content-mask[src*='/source-list/spam@'],
+img.content-mask[src*='/source-list/junk@'] {
+  .brume-mask(@brume-glyph-thumb-down);
+}
+img.content-mask[src*='/icon-sidebar-addcategory@'] {
+  .brume-mask(@brume-glyph-plus-box);
+}
+
+// Ligne de l'objet : tout déplier / replier, imprimer, ouvrir à part.
+img.content-mask[src*='/message-list/expand@'] {
+  .brume-mask(@brume-glyph-expand);
+}
+img.content-mask[src*='/message-list/collapse@'] {
+  .brume-mask(@brume-glyph-collapse);
+}
+img.content-mask[src*='/message-list/print@'] {
+  .brume-mask(@brume-glyph-print);
+}
+img.content-mask[src*='/thread-popout@'] {
+  .brume-mask(@brume-glyph-pop-out);
+}
+img.content-mask[src*='/thread-popin@'] {
+  .brume-mask(@brume-glyph-pop-in);
+}
+
+// Pièces jointes.
+img.content-mask[src*='/attachment-quicklook@'] {
+  .brume-mask(@brume-glyph-eye);
+}
+img.content-mask[src*='/icon-attachment-download@'] {
+  .brume-mask(@brume-glyph-download);
+}
+img.content-mask[src*='/remove-attachment@'] {
+  .brume-mask(@brume-glyph-remove);
+}
+img.content-mask[src*='/ic-attachments-download-all@'] {
+  .brume-mask(@brume-glyph-download-10);
+}
+img.content-mask[src*='/ic-attachments-all-clippy@'] {
+  .brume-mask(@brume-glyph-attach-13);
+}
+
+// Suivi d'ouverture ("2 opens") et boutons du composeur.
+img.content-mask[src*='/InMessage-opened@'] {
+  .brume-mask(@brume-glyph-eye-19);
+}
+img.content-mask[src*='/icon-composer-eye@'] {
+  .brume-mask(@brume-glyph-eye-21);
+}
+img.content-mask[src*='/icon-composer-linktracking@'] {
+  .brume-mask(@brume-glyph-link-tracking);
+}
+img.content-mask[src*='/icon-composer-attachment@'] {
+  .brume-mask(@brume-glyph-attach-21);
+}
+img.content-mask[src*='/icon-composer-templates@'] {
+  .brume-mask(@brume-glyph-templates);
+}
+// Signature : le stylo est gardé pour qu'on reconnaisse l'action ; l'image d'origine
+// inclut le chevron du menu, le pictogramme aussi.
+img.content-mask[src*='/top-signature-dropdown@'] {
+  .brume-mask(@brume-glyph-signature);
+}
+
+//===================== 2. Image affichée telle quelle ==================//
+
+// Brouillon : crayon rouge plein. Même tracé fin, teinté rose.
+img.draft-icon[src*='/icon-draft-pencil'] {
+  object-position: 10000px;
+  background-color: @brume-rose;
+  .brume-mask(@brume-glyph-pencil);
+}
+
+//======================= 3. Images de fond =============================//
+
+.brume-mask-bg(@glyph, @size, @color: @brume-icon) {
+  background-image: none;
+  background-color: @color;
+  -webkit-mask-image: @glyph;
+  -webkit-mask-size: @size @size;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+}
+
+// Icônes d'état d'une ligne : répondu, transféré, pièce jointe. Le survol (étoile grise,
+// thread-list.less) est plus spécifique et garde la main.
+.thread-list,
+.draft-list {
+  .thread-icon.thread-icon-replied {
+    .brume-mask-bg(@brume-glyph-reply-15, 15px);
+  }
+  .thread-icon.thread-icon-forwarded {
+    .brume-mask-bg(@brume-glyph-forward-15, 15px);
+  }
+  .thread-icon.thread-icon-attachment {
+    .brume-mask-bg(@brume-glyph-attach-15, 15px);
+  }
+}
+
+// Rappels : cloche violette quand le rappel s'est déclenché, grise quand il attend.
+// Sélecteur aussi précis que celui du module (ligne .thread-list-reminder-item).
+.thread-list .list-item.thread-list-reminder-item .thread-icon-reminder-triggered {
+  .brume-mask-bg(@brume-glyph-bell-15, 15px, @brume-violet);
+}
+.thread-list .list-item .thread-icon-reminder-pending {
+  .brume-mask-bg(@brume-glyph-bell-15, 15px);
+}
+
+// Message replié : trombone à côté de l'expéditeur (même précision que la base).
+#message-list .message-item-wrap.collapsed .message-item-area .collapsed-attachment {
+  .brume-mask-bg(@brume-glyph-attach-15, 15px);
+}
+
+// Actions au survol d'une ligne : l'élément est agrandi deux fois puis réduit (zoom),
+// d'où un masque de 44px pour une icône de 22pt. Sur la ligne ouverte, la base remet
+// l'image d'origine avec un sélecteur plus précis : on le reprend à l'identique.
+.thread-list .list-item .list-column-HoverActions .action,
+.thread-list .list-item.focused:hover .list-column-HoverActions .inner .action {
+  &.action-archive {
+    .brume-mask-bg(@brume-glyph-archive-22, 44px);
+  }
+  &.action-trash {
+    .brume-mask-bg(@brume-glyph-trash-22, 44px);
+  }
+  &.action-snooze {
+    .brume-mask-bg(@brume-glyph-clock-22, 44px);
+  }
+}
+
+//================ 4. Barre de mise en forme (Font Awesome) ==============//
+
+.brume-fa(@glyph) {
+  &::before {
+    content: '';
+    display: block;
+    width: 16px;
+    height: 16px;
+    background-color: currentColor;
+    -webkit-mask-image: @glyph;
+    -webkit-mask-size: contain;
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+  }
+}
+
+// Gras, italique, souligné, barré : les lettres dans la police du système, comme dans
+// Mail et Pages, au lieu des glyphes à empattements de Font Awesome.
+.brume-fa-letter() {
+  &::before {
+    display: block;
+    width: 16px;
+    height: 16px;
+    font-family: @font-family;
+    font-size: 15px;
+    font-style: normal;
+    line-height: 16px;
+    text-align: center;
+  }
+}
+
+.RichEditor-toolbar {
+  // Boîte de 16pt sans ligne de base : Font Awesome pose une hauteur de ligne de 1 et
+  // un alignement sur le texte, qui décalaient les pictogrammes vers le haut.
+  .fa-link,
+  .fa-quote-left,
+  .fa-sticky-note-o,
+  .fa-list-ul,
+  .fa-list-ol,
+  .fa-smile-o,
+  .fa-text-height,
+  .fa-tag,
+  .fa-bold,
+  .fa-italic,
+  .fa-underline,
+  .fa-strikethrough {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    vertical-align: middle;
+  }
+
+  .fa-link {
+    .brume-fa(@brume-glyph-link);
+  }
+  .fa-quote-left {
+    .brume-fa(@brume-glyph-quote);
+  }
+  .fa-sticky-note-o {
+    .brume-fa(@brume-glyph-code); // bloc de code
+  }
+  .fa-list-ul {
+    .brume-fa(@brume-glyph-list-ul);
+  }
+  .fa-list-ol {
+    .brume-fa(@brume-glyph-list-ol);
+  }
+  .fa-smile-o {
+    .brume-fa(@brume-glyph-smile);
+  }
+  .fa-text-height {
+    .brume-fa(@brume-glyph-text-size);
+  }
+  .fa-tag {
+    .brume-fa(@brume-glyph-tag);
+  }
+
+  .fa-bold {
+    .brume-fa-letter();
+    &::before {
+      content: 'B';
+      font-weight: 700;
+    }
+  }
+  .fa-italic {
+    .brume-fa-letter();
+    &::before {
+      content: 'I';
+      font-style: italic;
+    }
+  }
+  .fa-underline {
+    .brume-fa-letter();
+    &::before {
+      content: 'U';
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+  }
+  .fa-strikethrough {
+    .brume-fa-letter();
+    &::before {
+      content: 'S';
+      text-decoration: line-through;
+    }
+  }
+}

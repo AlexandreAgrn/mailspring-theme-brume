@@ -231,34 +231,109 @@
 }
 
 //===================== Pièces jointes ==================================//
-.nylas-attachment-item {
-  .file-info-wrap,
-  .file-action-icon,
+// Une seule carte : vignette éventuelle, puis la ligne icône, nom, taille et actions.
+// La base dessine des cellules encadrées collées les unes aux autres (cloisons entre
+// le nom, l'aperçu et le téléchargement) ; ici les cadres disparaissent, la carte porte
+// un filet unique et coupe la vignette à son arrondi. Les actions (aperçu, télécharger,
+// retirer) deviennent des boutons ronds de 26pt, comme "…" sur la ligne de l'expéditeur.
+@brume-attachment-row: 40px;
+
+.nylas-attachment-item.file-attachment-item {
+  border-radius: @brume-radius-m;
+  background: @brume-paper;
+  box-shadow: 0 0 0 1px @brume-hairline-strong;
+  overflow: hidden;
+  transition: box-shadow 120ms ease-out;
+
+  &:hover {
+    box-shadow: 0 0 0 1px @brume-hairline-strong, 0 3px 10px -4px fade(@brume-ink, 14%);
+  }
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px @accent-primary, 0 0 0 4px @brume-accent-ring;
+  }
+
   .file-thumbnail-preview {
-    border-color: @brume-hairline-strong;
-    background-color: @brume-paper;
+    border: 0;
+    border-bottom: 1px solid @brume-hairline;
+    border-radius: 0;
   }
-  .file-info-wrap {
-    border-radius: @brume-radius-m 0 0 @brume-radius-m;
+
+  .inner {
+    height: @brume-attachment-row;
+    border-radius: 0;
+    background: transparent;
   }
-  .file-action-icon {
-    border-radius: 0 @brume-radius-m @brume-radius-m 0;
-    &.quicklook {
-      border-radius: 0;
+
+  .file-info-wrap,
+  &.has-preview .file-info-wrap {
+    height: @brume-attachment-row;
+    min-width: 0;
+    padding: 0 4px 0 12px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+
+    .file-icon {
+      margin-right: 8px;
+    }
+    .file-name {
+      color: @brume-ink;
+    }
+    .file-size {
+      margin-right: 6px;
+      color: @text-color-very-subtle;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  .file-action-icon,
+  &.has-preview .file-action-icon,
+  .file-action-icon.quicklook {
+    flex: 0 0 26px;
+    width: 26px;
+    height: 26px;
+    margin: 0 7px 0 0; // 7 = (40 - 26) / 2 : même retrait sur le bord et en haut
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    transition: background 120ms ease-out;
+
+    img.content-mask {
+      background-color: @brume-icon;
     }
     &:hover {
-      background-color: @brume-fill-opaque;
+      background: @brume-fill-subtle;
+      img.content-mask {
+        background-color: @brume-ink;
+      }
     }
     &:active {
-      background-color: @brume-fill-opaque-strong;
+      background: @brume-fill;
     }
   }
-  .file-thumbnail-preview {
-    border-radius: @brume-radius-m @brume-radius-m 0 0;
+  .file-action-icon.quicklook {
+    margin-right: 2px;
   }
-  .progress-bar-wrap .progress-foreground {
-    background: @accent-primary;
+
+  // Barre de progression : collée au bas de la carte, sur toute sa largeur.
+  .progress-bar-wrap {
+    .progress-background,
+    .progress-foreground {
+      left: 0;
+      bottom: 0;
+      border-radius: 0;
+    }
+    .progress-background {
+      width: 100%;
+      background: @brume-hairline;
+    }
   }
+}
+// Spécificité de la base : les états "terminé" et "échec" gardent leur couleur.
+.nylas-attachment-item .progress-bar-wrap .progress-foreground {
+  background: @accent-primary;
 }
 
 //===================== Reporter (snooze) ===============================//
@@ -651,6 +726,95 @@ body .preferences-wrap .container-preference-tabs {
     }
     &:active {
       background: @brume-fill;
+    }
+  }
+}
+
+//===================== Ouvertures d'un message envoyé ===================//
+// "N opens" sur la ligne de l'expéditeur : capsule de 26pt, comme "Répondre" et "…",
+// teintée de la couleur du suivi d'ouverture (celle de l'icône de la liste), puisqu'un
+// clic ouvre le détail. "No opens" n'ouvre rien : texte gris, sans capsule.
+#message-list .message-header .message-header-right .open-tracking-message-status {
+  display: inline-flex;
+  align-items: center;
+  height: @brume-header-control;
+  margin: 0;
+  padding: 0 4px;
+  border-radius: @brume-capsule;
+  color: @text-color-very-subtle;
+  font-size: @font-size-small;
+  white-space: nowrap;
+
+  img.content-mask {
+    background-color: @text-color-very-subtle;
+  }
+
+  &.opened {
+    padding: 0 12px 0 10px; // comme "Unsubscribe" (icône à gauche)
+    background: fade(@open-tracking-color, 10%);
+    color: @open-tracking-color;
+    font-weight: @font-weight-medium;
+    transition: background 120ms ease-out;
+    img.content-mask {
+      background-color: @open-tracking-color;
+    }
+    &:hover {
+      background: fade(@open-tracking-color, 16%);
+    }
+    &:active {
+      background: fade(@open-tracking-color, 19%); // 4,7:1 ; 22% passait sous 4,5:1
+    }
+  }
+}
+
+// Détail des ouvertures ("Opened by:") : même gabarit que les menus (Traduire, Rappel).
+// Intitulé discret aligné sur le texte des lignes, filet, lignes en retrait de 6pt.
+// Les lignes ne sont pas cliquables : pas de survol.
+.open-tracking-message-popover {
+  .open-tracking-header {
+    padding: 10px 18px 7px;
+    border-bottom: 1px solid @brume-hairline;
+    color: @text-color-very-subtle;
+    font-size: @font-size-small;
+    font-weight: @font-weight-semi-bold;
+    text-align: left;
+  }
+
+  .open-history-container {
+    max-height: 200px; // le popover plafonne à 240pt, intitulé compris
+    padding: 6px 0;
+
+    .open-action {
+      align-items: baseline;
+      margin: 0 6px;
+      padding: 5px 12px;
+      line-height: 20px;
+      color: @brume-ink;
+
+      .recipient {
+        min-width: 0;
+        white-space: nowrap;
+      }
+      .timestamp {
+        padding-left: 12px;
+        color: @text-color-very-subtle;
+        font-size: @font-size-small;
+        font-variant-numeric: tabular-nums;
+      }
+    }
+
+    // Défilement au-delà de six lignes : poignée fine des menus.
+    &::-webkit-scrollbar {
+      width: 11px;
+    }
+    &::-webkit-scrollbar-track {
+      margin: 8px 0;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: @brume-scroll;
+      background-clip: padding-box;
+      border: 3px solid transparent;
+      border-radius: @brume-capsule;
     }
   }
 }

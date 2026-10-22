@@ -11,7 +11,9 @@
   .thread-search-bar .suggestions,
   .RichEditor-toolbar .dropdown,
   .RichEditor-toolbar .inner,
-  #message-list .message-item-wrap .message-item-white-wrap.composer-outer-wrap .RichEditor-toolbar .inner {
+  #message-list .message-item-wrap .message-item-white-wrap.composer-outer-wrap .RichEditor-toolbar .inner,
+  .grammar-correction-popover,
+  .time-picker-wrap .time-options {
     background-color: @brume-glass-fill-solid;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -49,8 +51,27 @@
 @media (prefers-contrast: more) {
   .fixed-popover-container .fixed-popover,
   .button-dropdown .secondary-items,
-  .thread-search-bar .suggestions {
+  .thread-search-bar .suggestions,
+  .grammar-correction-popover,
+  .time-picker-wrap .time-options {
     box-shadow: 0 0 0 1px fade(@brume-ink, 45%), @brume-glass-shadow;
+  }
+  // Cartes et listes à filet discret : filet renforcé.
+  .nylas-attachment-item.file-attachment-item,
+  .event-wrapper,
+  .nylas-editable-list .items-wrapper,
+  .nylas-editable-list .buttons-wrapper,
+  .preferences-wrap .container-accounts .accounts-content .account-details,
+  .container-mail-rules .rule-detail {
+    box-shadow: 0 0 0 1px fade(@brume-ink, 40%);
+  }
+  .toolbar-ThreadList .thread-search-bar,
+  .find-in-thread .input-wrap input {
+    box-shadow: inset 0 0 0 1px fade(@brume-ink, 40%);
+  }
+  img[src*='/searchclear@'],
+  .mail-important-icon {
+    background-color: @brume-icon;
   }
   body.platform-darwin .sheet-toolbar .btn-toolbar,
   body.platform-darwin .sheet-toolbar .button-group {

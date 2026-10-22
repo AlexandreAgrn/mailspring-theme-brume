@@ -129,6 +129,20 @@ body.window-type-composer {
   }
 }
 
+// Menus de l'en-tête (expéditeur "From", signature, suggestions de destinataires) : ils
+// s'ouvrent au même niveau que la barre de mise en forme, qui vient après dans la page
+// et passait donc dessus. L'en-tête ne prend le dessus que pendant qu'on s'en sert
+// (menu ouvert ou champ actif) : en permanence, il recouvrirait la barre collée en haut
+// quand il défile sous elle.
+.composer-header:focus-within {
+  position: relative;
+  z-index: 4;
+}
+.composer-header:has(.button-dropdown.open) {
+  position: relative;
+  z-index: 4;
+}
+
 .RichEditor-toolbar {
   font-family: @font-family;
   font-size: @font-size-small;
@@ -253,14 +267,24 @@ body.window-type-composer {
 .composer-inner-wrap .composer-action-bar-content,
 .composer-full-window .composer-inner-wrap .composer-action-bar-content {
   align-items: center;
+  gap: 2px; // les pastilles des options activées ne se touchent plus
   padding: 6px;
   background: @brume-tray;
   border-radius: @brume-capsule;
   box-shadow: inset 0 0 0 0.5px @brume-hairline;
 }
+.composer-inner-wrap .composer-action-bar-plugins {
+  align-items: center;
+  gap: 2px;
+}
 
 .composer-inner-wrap .composer-action-bar-wrap {
+  // Centrage par flexbox : avec la hauteur de ligne, les icônes (images en ligne) se
+  // posaient sur la ligne de base du texte, 1,5pt trop bas.
   .btn.btn-toolbar:not(.btn-emphasis) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     height: 32px;
     line-height: 32px;
     min-width: 32px;
@@ -286,6 +310,25 @@ body.window-type-composer {
     }
   }
 
+  // Boutons à icône seule (suivi d'ouverture, de clics, grammaire, pièce jointe,
+  // corbeille) : ronds de 32pt, comme les pastilles d'option activée.
+  // Une seule icône, éventuellement précédée de la pastille d'alerte de quota (div en
+  // position absolue) : au plus deux enfants, le dernier étant l'icône.
+  .btn.btn-toolbar:not(.btn-emphasis):has(> img.content-mask:last-child):not(:has(> * + * + *)):not(:has(> img + img)) {
+    width: 32px;
+    padding: 0;
+  }
+  .btn.btn-toolbar:not(.btn-emphasis):has(> .grammar-check-icon-wrap:last-child):not(:has(> * + * + *)) {
+    width: 32px;
+    padding: 0;
+  }
+  // Pastille d'alerte de quota : avec le centrage flex, sa position par défaut tombait sur
+  // l'icône. Ancrée en haut à droite de l'icône, comme dans la base.
+  .btn.btn-toolbar:not(.btn-emphasis) > div[style*='absolute'] {
+    top: 0;
+    left: 50%;
+  }
+
   // Envoyer : capsule pleine hauteur, alignée sur les autres boutons.
   .btn-send {
     margin-right: 8px;
@@ -301,8 +344,14 @@ body.window-type-composer {
     .secondary-picker {
       padding: 0 10px 0 8px;
     }
-    img.content-mask {
+    // Icônes du bouton seulement : le menu des variantes d'envoi (Envoyer et archiver...)
+    // est dans le même élément, ses icônes passaient en blanc sur le verre blanc.
+    .primary-item img.content-mask,
+    .secondary-picker img.content-mask {
       background-color: @btn-emphasis-text-color;
+    }
+    .secondary-items img.content-mask {
+      background-color: @brume-icon;
     }
   }
 }
@@ -333,9 +382,10 @@ body.window-type-composer {
     background: transparent;
   }
   // La base retire la marge droite de la corbeille dans le fil : l'icône se décalait
-  // à gauche de sa pastille de survol. Même marge des deux côtés, comme les autres.
+  // à gauche de sa pastille de survol. Bouton rond centré, comme les autres icônes seules.
   .composer-action-bar-wrap .btn.btn-toolbar.btn-trash {
-    padding: 0 8px;
+    width: 32px;
+    padding: 0;
   }
   &.focused {
     background: @brume-paper;
@@ -344,4 +394,13 @@ body.window-type-composer {
       background: linear-gradient(to right, fade(@brume-paper, 0%) 0%, @brume-paper 40%);
     }
   }
+}
+
+//===================== Texte cité ======================================//
+// La base colore les citations en mêlant le texte à du violet pur (mauve hors palette).
+// Texte gris du thème et filet d'accent doux, comme une citation de Mail.
+.RichEditor-root blockquote,
+.RichEditor-root .uneditable blockquote {
+  border-left: 2px solid @brume-accent-ring;
+  color: @text-color-subtle;
 }

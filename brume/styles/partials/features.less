@@ -1,0 +1,545 @@
+// Fonctions de Mailspring (modules) restées au style d'origine : couleurs écrites en dur,
+// cadres, dégradés. Chaque bloc ramène l'élément aux formes et aux teintes de Brume.
+// Voir aussi composer.less (texte cité) et preferences.less (fenêtres de réglages).
+
+//===================== Liste des fils ==================================//
+
+// Étiquette "Snoozed" : violet foncé écrit en dur (#472b82) dans le module.
+.snooze-mail-label img.content-mask {
+  background-color: @brume-violet;
+}
+
+// Fils dont le rappel s'est déclenché : la base teinte toute la ligne de lavande, que
+// Brume recouvrait. La teinte passe dans la pastille, sous le survol et la sélection.
+.thread-list .list-container .list-item.thread-list-reminder-item:not(:hover):not(.selected):not(.focused) {
+  --brume-row-bg: fade(@brume-violet, 7%);
+}
+
+// Marqueur "Important" (comptes Gmail) : étiquette jaune pleine. Même forme au trait,
+// grise au survol, pleine et pêche quand le message est important.
+.mail-important-icon {
+  .brume-mask-bg(@brume-glyph-important, 16px, fade(@brume-ink, 48%)); // 3:1 (commande)
+}
+.mail-important-icon.enabled:hover {
+  background-image: none;
+  background-color: @brume-icon;
+}
+.mail-important-icon.enabled.active,
+.mail-important-icon.enabled.active:hover {
+  .brume-mask-bg(@brume-glyph-important-fill, 16px, @brume-peach);
+  filter: none;
+}
+
+// Dossiers vides (et "Loading Messages…") : illustrations de Mailspring à tracé daté
+// (pouce massif, étoile et avion anguleux) et de tailles inégales. Mêmes pictogrammes
+// que le reste du thème, agrandis à 150pt, trait fin et gris très léger.
+.brume-empty(@file, @glyph) {
+  // Seulement les images remplacées : les dossiers sans illustration (boîte de réception,
+  // dossiers personnels, résultats de recherche) gardent leur image vide, sans taille.
+  // Zoom neutralisé : il vaut 0,5 pour les images @2x mais 1 pour les @1x (écran non
+  // Retina), la taille resterait sinon double.
+  .empty-state .perspective-empty-state img.content-mask[src*='/ic-emptystate-@{file}@'] {
+    zoom: 1 !important;
+    width: 150px !important;
+    height: 150px !important;
+    background-color: fade(@brume-ink, 18%);
+    .brume-mask(@glyph);
+  }
+}
+.brume-empty(archive, @brume-glyph-empty-archive);
+.brume-empty(drafts, @brume-glyph-empty-drafts);
+.brume-empty(important, @brume-glyph-empty-important);
+.brume-empty(n1-snoozed, @brume-glyph-empty-snoozed);
+.brume-empty(reminders, @brume-glyph-empty-reminders);
+.brume-empty(sent, @brume-glyph-empty-sent);
+.brume-empty(spam, @brume-glyph-empty-spam);
+.brume-empty(starred, @brume-glyph-empty-starred);
+.brume-empty(trash, @brume-glyph-empty-trash);
+
+// Dossier vide après tri complet ("Inbox Zero") : la base joue une animation colorée
+// dans un cadre (coche en dégradé vert-jaune). Remplacée par une coche fine, du même
+// trait que les illustrations des autres dossiers vides.
+.empty-state .inbox-zero-animation .animation-wrapper {
+  transform: none;
+
+  iframe {
+    display: none;
+  }
+  &::before {
+    content: '';
+    display: block;
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 4px;
+    background-color: @brume-sage;
+    -webkit-mask: @brume-glyph-check-circle center / contain no-repeat;
+  }
+  .message {
+    font-size: 2em;
+    color: @text-color-very-subtle;
+  }
+}
+
+//===================== Rechercher dans le fil (⌘F) =====================//
+// Bandeau gris à filet, champ et boutons nus. Devient une barre légère : champ en
+// capsule, compteur dans le champ, flèches et fermeture en boutons ronds.
+.find-in-thread {
+  background: transparent;
+  &.enabled {
+    height: 44px;
+    padding: 8px 12px;
+    border-bottom: 0;
+  }
+
+  .input-wrap input {
+    height: 28px;
+    width: 260px;
+    padding: 0 84px 0 12px;
+    border: 0;
+    border-radius: @brume-capsule;
+    background: @brume-paper;
+    box-shadow: inset 0 0 0 1px @brume-hairline-strong;
+    font-size: @font-size-small;
+    &:focus {
+      box-shadow: inset 0 0 0 1px @accent-primary, 0 0 0 3px @brume-accent-ring;
+    }
+  }
+  .selection-progress {
+    top: 0;
+    right: 62px;
+    line-height: 28px; // hauteur du champ : compteur centré
+    color: @text-color-very-subtle;
+    font-variant-numeric: tabular-nums;
+  }
+  .input-wrap .btn-wrap {
+    top: 2px;
+    right: 3px;
+    display: flex;
+    gap: 2px;
+  }
+
+  .btn.btn-find-in-thread {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    min-width: 0;
+    padding: 0;
+    border-radius: 50%;
+    transition: background 120ms ease-out;
+    img.content-mask {
+      background-color: @brume-icon;
+    }
+    &:hover {
+      background: @brume-fill-subtle;
+      img.content-mask {
+        background-color: @brume-ink;
+      }
+    }
+    &:active {
+      background: @brume-fill;
+    }
+  }
+  .controls-wrap > .btn.btn-find-in-thread {
+    margin-left: 6px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+// Occurrences trouvées : sans l'ombre portée de la base.
+#message-list .search-match,
+#message-list search-match {
+  box-shadow: none;
+}
+
+//===================== Bouton du texte cité ("•••") =====================//
+.quoted-text-control {
+  display: inline-flex;
+  align-items: center;
+  height: 20px; // hauteur des étiquettes de dossier
+  padding: 0 8px;
+  border: 0;
+  border-radius: @brume-capsule;
+  background: @brume-fill;
+  color: @brume-icon;
+  line-height: 20px;
+  transition: background 120ms ease-out, color 120ms ease-out;
+
+  &:hover {
+    border: 0;
+    background: @brume-fill-opaque-strong;
+    color: @brume-ink;
+  }
+}
+
+//===================== Avatars (fiche contact) =========================//
+// Carré à cadre, ombre noire et reflet en dégradé : un rond net, cerclé de blanc.
+.contact-profile-photo {
+  border-radius: 50%;
+  box-shadow: @brume-ring, 0 2px 8px -2px fade(@brume-ink, 14%);
+
+  .profile-photo {
+    border-radius: 50%;
+  }
+  .profile-photo .default-profile-image {
+    background-image: none;
+    box-shadow: none;
+    font-weight: @font-weight-medium;
+  }
+}
+
+//===================== Carte d'invitation =============================//
+// Carte à un seul filet ; icône de calendrier rouge remplacée par le pictogramme au
+// trait ; réponses en capsules teintées (sauge, rose, pêche) au lieu d'aplats pleins à
+// texte blanc.
+.event-wrapper {
+  border: 0;
+  border-radius: @brume-radius-m;
+  background: @brume-paper;
+  box-shadow: 0 0 0 1px @brume-hairline-strong;
+
+  .event-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid @brume-hairline;
+
+    // Image @2x réduite de moitié par Mailspring (zoom) : 32px pour 16pt.
+    img[src*='icon-RSVP-calendar-mini'] {
+      width: 32px;
+      height: 32px;
+      margin: 0;
+      object-position: 10000px;
+      background-color: @accent-primary;
+      .brume-mask(@brume-glyph-calendar);
+    }
+    .event-title {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: @font-weight-medium;
+    }
+    .event-download {
+      order: 2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      &:hover {
+        background: @brume-fill-subtle;
+      }
+      img.content-mask {
+        background: @brume-icon;
+      }
+    }
+  }
+
+  .event-body {
+    padding: 12px;
+
+    .event-actions .btn-rsvp {
+      min-width: 0;
+      margin: 8px 6px 0 0;
+      padding: 0 12px;
+      height: @brume-header-control;
+      line-height: @brume-header-control;
+      font-size: @font-size-small;
+      border: 0;
+      border-radius: @brume-capsule;
+      background: @brume-fill;
+      box-shadow: none;
+      color: @brume-ink;
+
+      &:hover {
+        background: @brume-fill-opaque-strong;
+      }
+      &:active {
+        background: @brume-fill-opaque-pressed;
+      }
+      &.ACCEPTED {
+        background: @brume-sage-soft;
+        color: @brume-sage-strong;
+      }
+      &.DECLINED {
+        background: @brume-rose-soft;
+        color: @brume-rose;
+      }
+      &.TENTATIVE {
+        background: @brume-peach-soft;
+        color: @brume-peach-strong;
+      }
+    }
+
+    .event-rsvp-destination .event-rsvp-calendar-picker {
+      border-color: @brume-hairline-strong;
+      border-radius: @brume-radius-xs;
+    }
+  }
+}
+
+//===================== Alerte d'hameçonnage ============================//
+// Encadré rose de Bootstrap : bandeau aux couleurs de la palette, sans cadre.
+.phishingIndicator {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: @brume-radius-m;
+  background-color: @brume-rose-soft;
+  color: @brume-rose;
+  font-size: @font-size-small;
+}
+
+//===================== Bandeau de rappel ===============================//
+// Dégradé lavande et violet vif écrits en dur : bandeau violet doux, texte violet.
+.send-reminders-header {
+  border-bottom: 0;
+  border-radius: @brume-radius-l @brume-radius-l 0 0;
+  background: fade(@brume-violet, 9%);
+  color: @brume-violet;
+
+  img.content-mask {
+    background-color: @brume-violet;
+  }
+  .clear-reminder {
+    color: @brume-violet;
+    text-decoration: none;
+    font-weight: @font-weight-medium;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+.message-list-headers .send-reminders-header {
+  border-radius: @brume-radius-m;
+}
+
+//===================== Suivi des liens =================================//
+// Détail "Clicked by:" au gabarit des menus, comme celui des ouvertures.
+.link-tracking-message-popover {
+  .link-tracking-header {
+    padding: 10px 18px 7px;
+    border-bottom: 1px solid @brume-hairline;
+    color: @text-color-very-subtle;
+    font-size: @font-size-small;
+    font-weight: @font-weight-semi-bold;
+    text-align: left;
+  }
+  .click-history-container {
+    padding: 6px 0;
+    .click-action {
+      align-items: baseline;
+      margin: 0 6px;
+      padding: 5px 12px;
+      line-height: 20px;
+      color: @brume-ink;
+      .timestamp {
+        padding-left: 12px;
+        color: @text-color-very-subtle;
+        font-size: @font-size-small;
+        font-variant-numeric: tabular-nums;
+      }
+    }
+  }
+}
+//===================== Bandeau de traduction ===========================//
+// Bleu vif (#0095ff) mélangé au fond, cadres foncés : bandeau bleu ciel arrondi, les
+// actions en capsules alignées à droite.
+.translate-message-header {
+  align-items: center;
+  gap: 8px;
+  padding: 6px 6px 6px 12px;
+  border-radius: @brume-radius-m;
+  background-color: @brume-sky-soft;
+  color: @brume-sky;
+
+  .message,
+  .message.with-actions {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .actions {
+    flex-direction: row;
+    gap: 6px;
+
+    .action,
+    .action:first-child,
+    .action:last-child {
+      min-height: 26px;
+      min-width: 0;
+      padding: 0 12px;
+      border: 0;
+      border-radius: @brume-capsule;
+      background: fade(@brume-paper, 70%);
+      color: @brume-sky;
+      font-weight: @font-weight-medium;
+      &:hover {
+        background: @brume-paper;
+      }
+      &:active {
+        background: fade(@brume-paper, 55%);
+      }
+    }
+    .action.button-dropdown .only-item {
+      padding: 0 12px;
+      img.content-mask {
+        background: @brume-sky;
+      }
+    }
+  }
+}
+
+//===================== Images insérées (composeur) =====================//
+// Poignée de redimensionnement noire, nom sur dégradé sombre : poignée en pastille
+// blanche, nom dans une capsule de verre sombre.
+.nylas-attachment-item.image-attachment-item {
+  border-radius: @brume-radius-s;
+
+  &:hover {
+    border: 1px dashed @brume-hairline-strong;
+  }
+  .file-preview {
+    border-radius: @brume-radius-s;
+    .file-name-container {
+      bottom: 6px;
+      left: 6px;
+      height: auto;
+      max-width: calc(~'100% - 12px');
+      border-radius: @brume-capsule;
+      background: fade(@brume-ink, 72%); // texte blanc lisible même sur une image claire
+      .file-name {
+        padding: 2px 10px;
+        font-size: @font-size-smaller;
+      }
+    }
+  }
+  .resizer {
+    right: 4px;
+    bottom: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: @brume-paper;
+    color: @brume-ink;
+    box-shadow: @brume-ring, 0 1px 4px fade(@brume-ink, 18%);
+    opacity: 0.9;
+  }
+  .file-action-icon {
+    border-radius: 50%;
+  }
+}
+
+//===================== Correcteur grammatical ==========================//
+// Bulle de correction : verre des popovers ; suggestions en capsules d'accent doux au
+// lieu d'aplats bleus à texte blanc. Soulignements : couleurs de la palette (la base
+// les écrit en style en ligne, d'où !important), même tracé ondulé.
+.grammar-correction-popover {
+  .brume-glass();
+  border: 0;
+  border-radius: @brume-radius-l;
+  padding: 10px 12px;
+
+  .grammar-message strong {
+    color: @brume-ink;
+    font-weight: @font-weight-semi-bold;
+  }
+  .grammar-replacements button {
+    height: @brume-header-control;
+    padding: 0 12px;
+    border-radius: @brume-capsule;
+    background: @brume-accent-soft;
+    color: @accent-primary;
+    font-weight: @font-weight-medium;
+    // Survol : même teinte, contour d'accent (une teinte plus soutenue passait sous 4,5:1).
+    &:hover {
+      opacity: 1;
+      box-shadow: inset 0 0 0 1px @accent-primary;
+    }
+  }
+  .grammar-actions {
+    border-top-color: @brume-hairline;
+    .btn-dismiss {
+      border-radius: @brume-capsule;
+      padding: 2px 8px;
+      &:hover {
+        background: @brume-fill-subtle;
+      }
+    }
+  }
+}
+
+//===================== Envoi différé ===================================//
+.send-later-status {
+  .time {
+    opacity: 1;
+    color: @accent-primary;
+  }
+  // Croix d'annulation : pastille grise ronde (image d'origine en couleur).
+  // Image @2x réduite de moitié par Mailspring (zoom) : 36px pour 18pt.
+  img[src*='image-cancel-button'] {
+    width: 36px;
+    height: 36px;
+    margin-left: 20px;
+    object-position: 10000px;
+    background-color: @brume-icon;
+    .brume-mask(@brume-glyph-remove);
+    cursor: pointer;
+    &:hover {
+      background-color: @brume-ink;
+    }
+  }
+}
+
+//===================== Heure et date personnalisées ====================//
+// Liste d'heures : elle s'ouvre dans un popover déjà en verre ; pas de verre sur verre,
+// un fond plein avec le contour et l'ombre des calques flottants.
+.time-picker-wrap .time-options {
+  background-color: @brume-glass-fill-solid;
+  box-shadow: @brume-glass-edge, @brume-glass-shadow;
+  margin-top: 4px;
+  padding: 4px 0;
+  border: 0;
+  border-radius: @brume-radius-m;
+
+  .option {
+    margin: 0 4px;
+    border-radius: @brume-radius-xs;
+    &.focused,
+    &:hover {
+      background: @brume-fill;
+    }
+  }
+}
+.propose-time-popover {
+  .date-picker .day-text,
+  .propose-time-comment {
+    border-color: @brume-hairline-strong;
+    border-radius: @brume-radius-xs;
+  }
+  .date-picker .day-text:hover,
+  .date-picker .day-text.focused,
+  .propose-time-comment:focus {
+    border-color: @accent-primary;
+  }
+}
+
+//===================== Sélecteur d'émojis ==============================//
+// Onglets : gris neutre de la base (@gray-light) remplacé par le gris du thème.
+.emoji-button-popover .emoji-tabs {
+  border-bottom-color: @brume-hairline;
+  .emoji-tab {
+    background-color: @brume-icon;
+    &.active {
+      background-color: @accent-primary;
+    }
+  }
+}
