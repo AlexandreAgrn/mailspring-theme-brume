@@ -69,7 +69,7 @@ Toutes les règles (`styles/partials/`) n'utilisent que des jetons définis dans
 
 ```
 lib/
-  main.js                  désélection au clic (seul comportement qui demande du code)
+  main.js                  désélection au clic, bouton de relève du courrier
 styles/
   ui-variables.less        jetons uniquement (importé par tout Mailspring)
   theme-colors.less        couleurs de l'aperçu dans le sélecteur de thèmes
@@ -96,7 +96,11 @@ styles/
 
 ## Comportement
 
-Un clic dans la zone vide de la liste ferme le message ouvert et décoche la sélection ; un clic ailleurs dans la fenêtre retire le cadre du curseur clavier. Mailspring ne gère pas ces clics : c'est le seul comportement du thème qui passe par du code (`lib/main.js`, chargé à l'activation du thème et retiré quand on en change).
+Un clic dans la zone vide de la liste ferme le message ouvert et décoche la sélection ; un clic ailleurs dans la fenêtre retire le cadre du curseur clavier. Mailspring ne gère pas ces clics.
+
+Un bouton "Sync New Mail Now" s'ajoute en haut à droite de la fenêtre (au bout du ruban de la recherche en disposition liste) : il envoie la même commande que F5.
+
+Ces deux comportements sont les seuls qui passent par du code (`lib/main.js`, chargé à l'activation du thème et retiré quand on en change).
 
 ## Limites connues
 

@@ -66,13 +66,67 @@ img.content-mask[src*='/toolbar-sidebar-right@'] {
   .brume-mask(@brume-glyph-sidebar);
 }
 
-// Barre latérale : "Non lus" et "Indésirables" reprennent les icônes de la barre d'outils.
+// Barre latérale (et partout où Mailspring reprend ces images : contacts, sélecteurs de
+// dossiers) : toutes les icônes de source-list/ passent au trait fin, à la taille de la
+// boîte (glyphes recadrés, voir SIDEBAR dans le script de génération). "today" et
+// "plugins" ne sont affichées nulle part dans Mailspring 1.26 et restent d'origine.
+// Un dossier système sans image propre (rôle "all" de Gmail) prend l'image du dossier.
+// (Règles écrites une à une : pas de each(), absent du LESS embarqué par Mailspring.)
+img.content-mask[src*='/source-list/inbox@'] {
+  .brume-mask(@brume-glyph-sidebar-inbox);
+}
 img.content-mask[src*='/source-list/unread@'] {
-  .brume-mask(@brume-glyph-mark-unread);
+  .brume-mask(@brume-glyph-sidebar-unread);
+}
+img.content-mask[src*='/source-list/starred@'] {
+  .brume-mask(@brume-glyph-sidebar-star);
+}
+img.content-mask[src*='/source-list/snoozed@'] {
+  .brume-mask(@brume-glyph-sidebar-clock);
+}
+img.content-mask[src*='/source-list/reminders@'] {
+  .brume-mask(@brume-glyph-sidebar-bell);
+}
+img.content-mask[src*='/source-list/sent@'] {
+  .brume-mask(@brume-glyph-sidebar-plane);
+}
+img.content-mask[src*='/source-list/drafts@'] {
+  .brume-mask(@brume-glyph-sidebar-document);
 }
 img.content-mask[src*='/source-list/spam@'],
 img.content-mask[src*='/source-list/junk@'] {
-  .brume-mask(@brume-glyph-thumb-down);
+  .brume-mask(@brume-glyph-sidebar-thumbdown);
+}
+img.content-mask[src*='/source-list/trash@'] {
+  .brume-mask(@brume-glyph-sidebar-trash);
+}
+img.content-mask[src*='/source-list/archive@'] {
+  .brume-mask(@brume-glyph-sidebar-archive);
+}
+img.content-mask[src*='/source-list/important@'] {
+  .brume-mask(@brume-glyph-sidebar-important);
+}
+img.content-mask[src*='/source-list/folder@'] {
+  .brume-mask(@brume-glyph-sidebar-folder);
+}
+img.content-mask[src*='/source-list/label@'],
+img.content-mask[src*='/source-list/tag@'] {
+  .brume-mask(@brume-glyph-sidebar-tag);
+}
+img.content-mask[src*='/source-list/activity@'] {
+  .brume-mask(@brume-glyph-sidebar-activity);
+}
+img.content-mask[src*='/source-list/person@'] {
+  .brume-mask(@brume-glyph-sidebar-person);
+}
+img.content-mask[src*='/source-list/people@'] {
+  .brume-mask(@brume-glyph-sidebar-people);
+}
+// Seule image de 30px (15pt) au lieu de 32 : boîte remise à 16pt comme les autres
+// (32px, divisés par le zoom de 0,5 que Mailspring pose en ligne).
+img.content-mask[src*='/source-list/snoozed@2x'] {
+  width: 32px !important;
+  height: 32px !important;
 }
 img.content-mask[src*='/icon-sidebar-addcategory@'] {
   .brume-mask(@brume-glyph-plus-box);

@@ -3,7 +3,7 @@
   "displayName": "Brume",
   "theme": "ui",
   "main": "./lib/main",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Thème clair, minimaliste et pastel, aligné sur Liquid Glass (macOS 26+).",
   "license": "MIT",
   "engines": {

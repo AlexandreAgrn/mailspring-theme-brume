@@ -65,9 +65,13 @@
   .container-mail-rules .rule-detail {
     box-shadow: 0 0 0 1px fade(@brume-ink, 40%);
   }
-  .toolbar-ThreadList .thread-search-bar,
   .find-in-thread .input-wrap input {
     box-shadow: inset 0 0 0 1px fade(@brume-ink, 40%);
+  }
+  // Lentille : bordure pleine à la place du dégradé, fond uni.
+  .toolbar-ThreadList .thread-search-bar:not(:focus-within) {
+    border-color: fade(@brume-ink, 40%);
+    background: @brume-paper;
   }
   img[src*='/searchclear@'],
   .mail-important-icon {

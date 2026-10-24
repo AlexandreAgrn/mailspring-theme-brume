@@ -187,3 +187,26 @@ body.platform-darwin .sheet-toolbar .message-toolbar-arrow {
 body.platform-darwin .sheet-toolbar .message-toolbar-arrow.up {
   box-shadow: @brume-capsule-edge, inset 1px 0 0 @brume-hairline;
 }
+
+// Bouton "relever le courrier" (lib/main.js) : capsule de la barre, icône en masque.
+// Au bout du ruban de la recherche (disposition liste), bord droit aligné sur les
+// pastilles de la liste, comme la recherche à gauche.
+body.platform-darwin .sheet-toolbar .btn-toolbar.brume-sync-now {
+  .brume-sync-now-icon {
+    display: block;
+    width: 16px;
+    height: 16px;
+    background-color: @text-color-subtle;
+    .brume-mask(@brume-glyph-refresh);
+    transition: background-color 140ms ease-out;
+  }
+  &:hover .brume-sync-now-icon {
+    background-color: @brume-ink;
+  }
+  &.spinning .brume-sync-now-icon {
+    animation: brume-spin 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+.toolbar-ThreadList .btn-toolbar.brume-sync-now {
+  margin-right: @brume-row-inset;
+}

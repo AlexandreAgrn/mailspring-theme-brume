@@ -9,6 +9,9 @@
 // Seul comportement du thème qui demande du code : Mailspring ne gère pas ces clics, et
 // une feuille de style ne peut pas modifier une sélection. Le module est chargé à
 // l'activation du thème et retiré quand on en change.
+//
+// Le module ajoute aussi un bouton "relever le courrier" en haut à droite de la liste des
+// fils (voir SyncNowButton, en fin de fichier).
 
 const LISTS = [
   { selector: '.thread-list', collection: 'thread' },
@@ -82,14 +85,76 @@ function onClick(event) {
   clearKeyboardCursor(list.collection);
 }
 
+// Bouton "relever le courrier", en haut à droite de la fenêtre sur l'écran des fils :
+// au bout du ruban de la recherche en disposition liste, au bout de la barre du volet de
+// lecture en colonnes (Mailspring place toujours les éléments "Toolbar.Right" d'une feuille
+// dans sa dernière colonne). Il envoie la même commande que F5 (window:sync-mail-now :
+// réveil des processus de synchronisation de chaque compte). La commande est écoutée sur
+// document.body ; dispatch la lance depuis l'élément actif et elle remonte jusque-là.
+// L'icône fait un tour au clic : Mailspring ne signale pas la fin d'un relevé.
+let SyncNowButton = null;
+
+function buildSyncNowButton() {
+  // React vient de mailspring-exports : seul src/global/ est ajouté aux chemins de
+  // recherche des modules, un require('react') échouerait depuis le dossier du thème.
+  const { React, localized } = ms();
+  const label = localized('Sync New Mail Now');
+
+  class BrumeSyncNowButton extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = { spinning: false };
+      this.timer = null;
+      this.onClick = () => {
+        AppEnv.commands.dispatch('window:sync-mail-now');
+        clearTimeout(this.timer);
+        this.setState({ spinning: false }, () => {
+          this.setState({ spinning: true });
+          this.timer = setTimeout(() => this.setState({ spinning: false }), 700);
+        });
+      };
+    }
+    componentWillUnmount() {
+      clearTimeout(this.timer);
+    }
+    render() {
+      const cls = `btn btn-toolbar brume-sync-now${this.state.spinning ? ' spinning' : ''}`;
+      return React.createElement(
+        'button',
+        {
+          tabIndex: -1,
+          className: cls,
+          title: `${label} (F5)`,
+          'aria-label': label,
+          style: { order: 400 }, // avant la bascule de la barre latérale (500)
+          onClick: this.onClick,
+        },
+        React.createElement('span', { className: 'brume-sync-now-icon', 'aria-hidden': 'true' })
+      );
+    }
+  }
+  BrumeSyncNowButton.displayName = 'BrumeSyncNowButton';
+  return BrumeSyncNowButton;
+}
+
 module.exports = {
   activate() {
     if (!AppEnv.isMainWindow()) return;
     document.addEventListener('pointerdown', onPointerDown, true);
     document.addEventListener('click', onClick);
+
+    const { ComponentRegistry, WorkspaceStore } = ms();
+    SyncNowButton = buildSyncNowButton();
+    ComponentRegistry.register(SyncNowButton, {
+      location: WorkspaceStore.Sheet.Threads.Toolbar.Right,
+    });
   },
   deactivate() {
     document.removeEventListener('pointerdown', onPointerDown, true);
     document.removeEventListener('click', onClick);
+    if (SyncNowButton) {
+      ms().ComponentRegistry.unregister(SyncNowButton);
+      SyncNowButton = null;
+    }
   },
 };

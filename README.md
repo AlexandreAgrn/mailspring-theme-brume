@@ -30,10 +30,12 @@ Both themes can be installed side by side.
 - **Continuous toolbar**: each toolbar segment takes the color of its column, no hard separators.
 - **Sidebar**: resizable from 200 to 420pt (instead of 165 to 250pt), 32pt rows, right-aligned counters, traffic lights centered on the toolbar axis.
 - **Message list**: rounded selection pills, subtle inset separators, visible checkboxes aligned with the unread dot, a gray star on hover to follow a thread.
-- **Click to deselect**: clicking the empty area of the list closes the open message and clears the selection; clicking anywhere else removes the keyboard cursor frame. This is the only behavior that needs code (a small `lib/main.js`, loaded with the theme and removed when you switch themes).
+- **Click to deselect**: clicking the empty area of the list closes the open message and clears the selection; clicking anywhere else removes the keyboard cursor frame.
+- **Sync button**: a "Sync New Mail Now" capsule at the top right of the window, same as F5. With click to deselect, this is the only part that needs code (a small `lib/main.js`, loaded with the theme and removed when you switch themes).
 - **Reading pane**: messages as cards, the reply area attached to the last card. Sender, date, reply and Unsubscribe on a single line; a chevron opens a clean details sheet (recipients, subject, folders).
 - **Composer**: a floating formatting bubble that stays in view while scrolling, without jumping, and a floating capsule action bar with centered, round icon buttons. Quoted text in a calm gray with a soft accent bar; the From, signature and Send menus open cleanly above everything.
-- **Thin-line icons**: about fifty of Mailspring's icons are redrawn in one consistent thin-stroke style (reply, forward, spam, read state, print, attachments, formatting bar, search, empty folders and more), sized and centered on a single grid.
+- **Thin-line icons**: about seventy of Mailspring's icons are redrawn in one consistent thin-stroke style (every sidebar icon, reply, forward, spam, read state, print, attachments, formatting bar, search, empty folders and more), sized and centered on a single grid.
+- **Search field**: a glass lens (lit rim, soft shadow) aligned with the list's selection pills; it lights up in the accent color when focused.
 - **Attachments**: one card per file with a hairline border, the thumbnail clipped to the card, and round preview / download / remove buttons.
 - **Message features**: read receipts as a capsule ("2 opens") with a clean "Opened by" list, calendar invitation cards with tinted reply capsules, and palette-matched phishing, reminder and translation banners. Find in thread (Cmd+F) becomes a capsule search field.
 - **Sync activity**: "Checking for mail" becomes a card with a thin spinner at the bottom of the sidebar.

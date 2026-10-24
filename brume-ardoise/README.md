@@ -41,7 +41,7 @@ Le corail pastel ne porte jamais de texte blanc (2,3:1, illisible) : le bouton E
 
 Couleurs : bloc "Ardoise" à la fin de `styles/ui-variables.less`. Le reste des jetons (géométrie, rayons, ombres) est documenté dans le README de Brume.
 
-Le comportement (désélection au clic, `lib/main.js`) est le même que dans Brume.
+Le comportement (désélection au clic, bouton de relève du courrier, `lib/main.js`) est le même que dans Brume.
 
 ## Limites connues
 

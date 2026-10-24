@@ -91,22 +91,33 @@ input[type='url'] {
   outline-offset: 2px;
 }
 
-// Recherche de la liste des fils : décollée de la barre latérale et alignée sur les
-// pastilles de la liste (8pt), remplie plutôt que cerclée.
+// Recherche de la liste des fils : lentille de verre. Bords alignés sur les pastilles de
+// survol et de sélection de la liste (8pt). Bordure de 1px en dégradé (lumière venue du
+// haut), corps teinté, lueur intérieure et ombre portée diffuse. Pas de flou : rien ne
+// défile sous la barre. La bordure est compensée dans le retrait : la loupe reste à 20pt
+// du bord de la colonne, au droit des cases à cocher.
 .toolbar-ThreadList .thread-search-bar {
-  margin-left: 8px;
-  margin-right: 8px;
-  background: @brume-fill-subtle;
-  box-shadow: none;
-  transition: background 140ms ease-out, box-shadow 140ms ease-out;
+  margin-left: @brume-search-inset;
+  margin-right: @brume-search-inset;
+  padding-left: 11px;
+  padding-right: 11px;
+  border: 1px solid transparent;
+  background: @brume-search-body padding-box, @brume-search-rim border-box;
+  box-shadow: @brume-search-shadow;
+  transition: background 160ms ease-out, box-shadow 160ms ease-out;
+  &:hover {
+    box-shadow: @brume-search-shadow-hover;
+  }
   &:focus-within {
-    background: @brume-paper;
-    box-shadow: 0 0 0 1px color-mix(in oklab, @brume-accent-var 55%, transparent),
-      0 0 0 4px @brume-accent-ring;
+    background: linear-gradient(@brume-paper, @brume-paper) padding-box, @brume-search-focus-rim border-box;
+    box-shadow: @brume-search-focus-shadow;
+    img[src*='/searchloupe@'] {
+      background-color: @accent-primary;
+    }
   }
 }
+// Fenêtre inactive : la matière reste, le relief disparaît (comme les capsules de la barre).
 body.is-blurred .toolbar-ThreadList .thread-search-bar {
-  background: @brume-fill-subtle;
   box-shadow: none;
 }
 
