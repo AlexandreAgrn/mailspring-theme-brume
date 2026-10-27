@@ -11,7 +11,8 @@
 // l'activation du thème et retiré quand on en change.
 //
 // Le module ajoute aussi un bouton "relever le courrier" en haut à droite de la liste des
-// fils (voir SyncNowButton, en fin de fichier).
+// fils (voir SyncNowButton) et, dans les indésirables, l'adresse de l'expéditeur sous son
+// nom (voir SenderAddress, en fin de fichier).
 
 const LISTS = [
   { selector: '.thread-list', collection: 'thread' },
@@ -137,24 +138,198 @@ function buildSyncNowButton() {
   return BrumeSyncNowButton;
 }
 
+// Adresse de l'expéditeur, dans les indésirables uniquement : pour trier d'un coup d'oeil,
+// le domaine compte plus que le nom affiché, que l'expéditeur choisit librement.
+//
+// Mailspring n'écrit que le nom dans la liste. Le seul emplacement prévu pour un module
+// dans une ligne est celui des icônes (rôle ThreadListIcon, première colonne) ; le
+// composant y reçoit le fil, donc ses messages et leurs expéditeurs. La feuille de style
+// (thread-list.less) déplace ensuite l'adresse sous le nom.
+//
+// Le composant n'est enregistré que pendant l'affichage des indésirables, et retiré dès
+// qu'on en sort. Raison : en affichage étroit, Mailspring ne rend qu'un seul composant de
+// cet emplacement (le premier enregistré). Le thème est activé avant les modules de
+// Mailspring : enregistré en permanence, il prendrait la place de l'icône de suivi
+// d'ouverture (Open Tracking) dans toutes les vues, même en ne rendant rien.
+//
+// Pas de barrière d'erreur autour de cet emplacement (containersRequired={false}) :
+// une exception casserait la ligne, d'où le try/catch.
+
+// Expéditeurs distincts du fil, dans l'ordre des messages (le premier est celui que
+// Mailspring nomme en tête de ligne). Repli sur les participants si les messages
+// manquent.
+function sendersOf(thread) {
+  const senders = [];
+  const seen = new Set();
+  const add = (contact) => {
+    const email = contact && typeof contact.email === 'string' ? contact.email.trim() : '';
+    if (!email || seen.has(email.toLowerCase())) return;
+    seen.add(email.toLowerCase());
+    senders.push({ email, name: typeof contact.name === 'string' ? contact.name : '' });
+  };
+  for (const message of Array.isArray(thread.__messages) ? thread.__messages : []) {
+    if (message.draft) continue;
+    (message.from || []).forEach(add);
+  }
+  if (senders.length === 0) {
+    (thread.participants || []).filter((c) => !(c.isMe && c.isMe())).forEach(add);
+  }
+  return senders;
+}
+
+function describeSender(thread) {
+  const senders = sendersOf(thread);
+  if (senders.length === 0) return null;
+  const { email, name } = senders[0];
+  // Sans nom affiché, Mailspring écrit déjà l'adresse à la place du nom : rien à ajouter.
+  if (!name.trim() || name.trim().toLowerCase() === email.toLowerCase()) return null;
+  const at = email.lastIndexOf('@');
+  const local = at > 0 ? email.slice(0, at) : email;
+  const domain = at > 0 ? email.slice(at + 1) : '';
+  return { email, local, domain, others: senders.length - 1 };
+}
+
+function isSpamPerspective() {
+  try {
+    const perspective = ms().FocusedPerspectiveStore.current();
+    return (
+      !!perspective &&
+      typeof perspective.categoriesSharedRole === 'function' &&
+      perspective.categoriesSharedRole() === 'spam'
+    );
+  } catch (err) {
+    return false;
+  }
+}
+
+let SenderAddress = null;
+let senderAddressRegistered = false;
+let unlistenPerspective = null;
+
+// Troncature : un fondu sur le bord coupé plutôt que des points de suspension, qui
+// laissent un blanc variable contre l'arobase. Le fondu ne doit apparaître que si le texte
+// déborde, ce qu'une feuille de style ne sait pas détecter : le composant mesure après
+// chaque rendu et pose une classe (local-clipped, domain-clipped).
+function buildSenderAddress() {
+  const { React } = ms();
+  const h = React.createElement;
+
+  class BrumeSenderAddress extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = { localClipped: false, domainClipped: false };
+      this.localRef = React.createRef();
+      this.domainClipRef = React.createRef();
+      this.domainTextRef = React.createRef();
+    }
+    componentDidMount() {
+      this.measure();
+    }
+    componentDidUpdate() {
+      this.measure();
+    }
+    measure() {
+      try {
+        const local = this.localRef.current;
+        const clip = this.domainClipRef.current;
+        const text = this.domainTextRef.current;
+        const localClipped = !!local && local.scrollWidth > local.clientWidth + 0.5;
+        const domainClipped = !!clip && !!text && text.offsetWidth > clip.clientWidth + 0.5;
+        if (
+          localClipped !== this.state.localClipped ||
+          domainClipped !== this.state.domainClipped
+        ) {
+          this.setState({ localClipped, domainClipped });
+        }
+      } catch (err) {
+        // mesure impossible : texte simplement coupé, sans fondu
+      }
+    }
+    render() {
+      let sender = null;
+      try {
+        sender = this.props.thread ? describeSender(this.props.thread) : null;
+      } catch (err) {
+        sender = null;
+      }
+      if (!sender) return null;
+
+      const { email, local, domain, others } = sender;
+      const { localClipped, domainClipped } = this.state;
+      const className = ['brume-sender']
+        .concat(localClipped ? ['local-clipped'] : [])
+        .concat(domainClipped ? ['domain-clipped'] : [])
+        .join(' ');
+      return h(
+        'span',
+        { className, title: email },
+        h('span', { className: 'brume-sender-local', ref: this.localRef }, local),
+        domain ? h('span', { className: 'brume-sender-at' }, '@') : null,
+        domain
+          ? h(
+              'span',
+              { className: 'brume-sender-domain' },
+              h(
+                'span',
+                { className: 'brume-sender-domain-clip', ref: this.domainClipRef },
+                h('bdi', { ref: this.domainTextRef }, domain)
+              )
+            )
+          : null,
+        others > 0 ? h('span', { className: 'brume-sender-more' }, `+${others}`) : null
+      );
+    }
+  }
+  BrumeSenderAddress.displayName = 'BrumeSenderAddress';
+  BrumeSenderAddress.containerRequired = false;
+  return BrumeSenderAddress;
+}
+
+function syncSenderAddress() {
+  if (!SenderAddress) return;
+  const wanted = isSpamPerspective();
+  if (wanted === senderAddressRegistered) return;
+  const { ComponentRegistry } = ms();
+  if (wanted) {
+    ComponentRegistry.register(SenderAddress, { role: 'ThreadListIcon' });
+  } else {
+    ComponentRegistry.unregister(SenderAddress);
+  }
+  senderAddressRegistered = wanted;
+}
+
 module.exports = {
   activate() {
     if (!AppEnv.isMainWindow()) return;
     document.addEventListener('pointerdown', onPointerDown, true);
     document.addEventListener('click', onClick);
 
-    const { ComponentRegistry, WorkspaceStore } = ms();
+    const { ComponentRegistry, WorkspaceStore, FocusedPerspectiveStore } = ms();
     SyncNowButton = buildSyncNowButton();
     ComponentRegistry.register(SyncNowButton, {
       location: WorkspaceStore.Sheet.Threads.Toolbar.Right,
     });
+
+    SenderAddress = buildSenderAddress();
+    unlistenPerspective = FocusedPerspectiveStore.listen(syncSenderAddress);
+    syncSenderAddress();
   },
   deactivate() {
     document.removeEventListener('pointerdown', onPointerDown, true);
     document.removeEventListener('click', onClick);
+    const { ComponentRegistry } = ms();
     if (SyncNowButton) {
-      ms().ComponentRegistry.unregister(SyncNowButton);
+      ComponentRegistry.unregister(SyncNowButton);
       SyncNowButton = null;
     }
+    if (unlistenPerspective) {
+      unlistenPerspective();
+      unlistenPerspective = null;
+    }
+    if (senderAddressRegistered) {
+      ComponentRegistry.unregister(SenderAddress);
+      senderAddressRegistered = false;
+    }
+    SenderAddress = null;
   },
 };

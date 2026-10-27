@@ -100,7 +100,9 @@ Un clic dans la zone vide de la liste ferme le message ouvert et décoche la sé
 
 Un bouton "Sync New Mail Now" s'ajoute en haut à droite de la fenêtre (au bout du ruban de la recherche en disposition liste) : il envoie la même commande que F5.
 
-Ces deux comportements sont les seuls qui passent par du code (`lib/main.js`, chargé à l'activation du thème et retiré quand on en change).
+Dans les indésirables (Spam, Junk), et seulement là, l'adresse de l'expéditeur s'affiche sous son nom : partie avant l'arobase atténuée, domaine en gras. Trop longue, l'adresse s'efface en fondu par son début et la fin du domaine reste lisible ; l'adresse complète est dans l'infobulle. Uniquement en affichage large (mode liste, ou liste de plus de 540pt) : l'affichage étroit de Mailspring n'a pas d'emplacement pour elle.
+
+Ces trois comportements sont les seuls qui passent par du code (`lib/main.js`, chargé à l'activation du thème et retiré quand on en change).
 
 ## Limites connues
 

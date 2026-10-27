@@ -31,7 +31,9 @@ Both themes can be installed side by side.
 - **Sidebar**: resizable from 200 to 420pt (instead of 165 to 250pt), 32pt rows, right-aligned counters, traffic lights centered on the toolbar axis.
 - **Message list**: rounded selection pills, subtle inset separators, visible checkboxes aligned with the unread dot, a gray star on hover to follow a thread.
 - **Click to deselect**: clicking the empty area of the list closes the open message and clears the selection; clicking anywhere else removes the keyboard cursor frame.
-- **Sync button**: a "Sync New Mail Now" capsule at the top right of the window, same as F5. With click to deselect, this is the only part that needs code (a small `lib/main.js`, loaded with the theme and removed when you switch themes).
+- **Sync button**: a "Sync New Mail Now" capsule at the top right of the window, same as F5.
+- **Sender address in Spam**: in the Spam (Junk) folder only, the sender's address appears under their name, local part muted and domain in full weight, so you can sort junk at a glance. When an address is too long, the start fades out and the end of the domain stays visible; the full address is in the tooltip.
+- **Code**: click to deselect, the sync button and the Spam addresses are the only parts that need code (a small `lib/main.js`, loaded with the theme and removed when you switch themes).
 - **Reading pane**: messages as cards, the reply area attached to the last card. Sender, date, reply and Unsubscribe on a single line; a chevron opens a clean details sheet (recipients, subject, folders).
 - **Composer**: a floating formatting bubble that stays in view while scrolling, without jumping, and a floating capsule action bar with centered, round icon buttons. Quoted text in a calm gray with a soft accent bar; the From, signature and Send menus open cleanly above everything.
 - **Thin-line icons**: about seventy of Mailspring's icons are redrawn in one consistent thin-stroke style (every sidebar icon, reply, forward, spam, read state, print, attachments, formatting bar, search, empty folders and more), sized and centered on a single grid.
@@ -58,6 +60,7 @@ To make your own color variant, copy `brume-ardoise`, rename it in `package.json
 
 - Mailspring's window is opaque, so the desktop does not show through the sidebar as in native apps.
 - Designed for macOS. It works on Windows and Linux, but the toolbar capsules are macOS-specific.
+- Spam addresses show in the wide list layout only (list mode, or a message list wider than 540pt). Mailspring's narrow layout has no room for them.
 - Email bodies keep their own formatting: Mailspring renders them in an isolated frame that themes cannot reach.
 - The account setup window always uses Mailspring's default look: Mailspring disables themes there on purpose.
 

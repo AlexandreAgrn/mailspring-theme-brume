@@ -285,3 +285,98 @@ body.is-blurred .list-container .list-item {
     }
   }
 }
+
+// Indésirables : adresse de l'expéditeur sous son nom, en affichage large.
+//
+// L'adresse (.brume-sender) est rendue par lib/main.js dans l'emplacement des icônes de
+// Mailspring (rôle ThreadListIcon, première colonne après la case à cocher), et seulement
+// quand la vue affichée est celle des indésirables : ces règles ne s'appliquent qu'aux
+// lignes qui la contiennent. On la sort de sa colonne pour la poser sous le nom, au début
+// de la colonne Participants (largeur fixée par Mailspring : 200pt). La hauteur des
+// lignes ne change pas : le nom remonte, l'adresse prend la moitié basse.
+//
+// Troncature : la partie avant l'arobase cède d'abord, puis le début du domaine. La fin
+// du domaine, celle qui permet de juger, reste toujours visible ; l'adresse complète est
+// dans l'infobulle.
+@brume-sender-participants-width: 200px;
+@brume-sender-shift: 8px; // nom remonté d'autant, adresse centrée d'autant sous l'axe
+@brume-sender-fade: 12px; // fondu sur le bord coupé d'une adresse trop longue
+
+.thread-list-wide .list-tabular-item:has(.brume-sender) {
+  // Colonne des icônes : elle devient le repère de l'adresse (son bord droit est le bord
+  // gauche de la colonne Participants), sur toute la hauteur de la ligne et sans rogner.
+  // Le conteneur des icônes injectées est positionné par Mailspring (style en ligne) :
+  // on le neutralise pour que l'adresse se cale sur la colonne.
+  .list-column:has(> .thread-injected-icons .brume-sender) {
+    position: relative;
+    align-self: stretch;
+    overflow: visible;
+    > .thread-injected-icons {
+      position: static !important;
+    }
+  }
+  .list-column-Participants {
+    position: relative;
+    top: -@brume-sender-shift;
+  }
+}
+
+.thread-list-wide .brume-sender {
+  position: absolute;
+  top: 50%;
+  left: calc(~'100% + @{padding-base-horizontal}');
+  width: @brume-sender-participants-width - 2 * @padding-base-horizontal;
+  margin-top: @brume-sender-shift - 7px; // ligne de 14px centrée à 8px sous l'axe
+  display: flex;
+  align-items: center;
+  font-size: 11.5px;
+  line-height: 14px;
+  font-weight: @font-weight-normal;
+  white-space: nowrap;
+  color: @text-color-very-subtle;
+  cursor: default;
+
+  .brume-sender-local {
+    flex: 0 100 auto; // cède avant le domaine, sans disparaître
+    min-width: 2em;
+    overflow: hidden;
+  }
+  .brume-sender-at,
+  .brume-sender-more {
+    flex: none;
+  }
+  .brume-sender-more {
+    padding-left: 4px;
+  }
+  .brume-sender-domain {
+    flex: 0 1 auto;
+    min-width: 24px;
+    display: flex;
+    font-weight: @font-weight-medium;
+    color: @text-color;
+  }
+  // Le domaine est calé à droite : s'il déborde, c'est son début qui sort de la boîte.
+  .brume-sender-domain-clip {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    justify-content: flex-end;
+    overflow: hidden;
+    > bdi {
+      flex: none;
+    }
+  }
+  // Fondus de troncature (classes posées par lib/main.js quand le texte déborde) : fin de
+  // la partie avant l'arobase, début du domaine.
+  &.local-clipped .brume-sender-local {
+    -webkit-mask-image: linear-gradient(to left, transparent 0, #000 @brume-sender-fade);
+  }
+  &.domain-clipped .brume-sender-domain-clip {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 @brume-sender-fade);
+  }
+}
+
+// Affichage étroit (cartes) : pas d'emplacement prévu, l'adresse n'est pas affichée.
+.thread-list-narrow .brume-sender {
+  display: none;
+}

@@ -3,7 +3,7 @@
   "displayName": "Brume Ardoise",
   "theme": "ui",
   "main": "./lib/main",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "description": "Variante de Brume à barre latérale sombre, inspirée de Darkside, alignée sur Liquid Glass (macOS 26+).",
   "license": "MIT",
   "engines": {
