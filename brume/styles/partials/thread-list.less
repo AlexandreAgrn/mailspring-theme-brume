@@ -380,3 +380,21 @@ body.is-blurred .list-container .list-item {
 .thread-list-narrow .brume-sender {
   display: none;
 }
+
+// Matcha-style unread shading across the entire row. Hover and selection
+// retain Brume's existing rounded highlights.
+.thread-list .list-container .list-item.unread:not(.focused):not(.selected):not(:hover),
+.draft-list .list-container .list-item.unread:not(.focused):not(.selected):not(:hover) {
+  background: color-mix(in oklab, @brume-accent-var 11%, @brume-paper) !important;
+}
+// Slightly stronger selection, independent of hover and other theme surfaces.
+.thread-list .list-container .list-item.selected,
+.thread-list .list-container .list-item.focused,
+.draft-list .list-container .list-item.selected,
+.draft-list .list-container .list-item.focused {
+  --brume-row-bg: color-mix(in oklab, @brume-accent-var 28%, @brume-paper);
+}
+.thread-list .list-item.selected:hover .list-column-HoverActions .inner,
+.thread-list .list-item.focused:hover .list-column-HoverActions .inner {
+  background-image: linear-gradient(to right, transparent 0%, color-mix(in oklab, @brume-accent-var 28%, @brume-paper) 45%);
+}

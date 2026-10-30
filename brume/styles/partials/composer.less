@@ -404,3 +404,17 @@ body.window-type-composer {
   border-left: 2px solid @brume-accent-ring;
   color: @text-color-subtle;
 }
+
+// Keep the Send segments rounded on Windows, including hover states.
+.composer-inner-wrap .composer-action-bar-wrap .btn-send {
+  border-radius: @brume-capsule;
+  .primary-item, &:hover .primary-item {
+    border-radius: @brume-capsule 0 0 @brume-capsule !important;
+  }
+  .secondary-picker, &:hover .secondary-picker {
+    border-radius: 0 @brume-capsule @brume-capsule 0 !important;
+  }
+  .only-item, &:hover .only-item {
+    border-radius: @brume-capsule !important;
+  }
+}
