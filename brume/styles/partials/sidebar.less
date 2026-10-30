@@ -457,3 +457,35 @@ body .account-sidebar .sidebar-activity {
     border-top-color: @brume-sidebar-hairline;
   }
 }
+
+// Allow descenders room while retaining horizontal label truncation.
+.account-sidebar .outline-view .item {
+  font-size: @font-size + 1px;
+  display: flex;
+  align-items: center;
+}
+.account-sidebar .outline-view .item .name {
+  height: auto;
+  min-height: 22px;
+  line-height: 22px;
+  padding-bottom: 2px;
+  min-width: 0;
+}
+// Account headings need their own text metrics, separate from folder rows.
+.account-sidebar .outline-view .heading {
+  box-sizing: border-box;
+  height: auto;
+  min-height: 36px;
+  padding-top: 6px;
+  padding-bottom: 4px;
+  font-size: @font-size;
+  line-height: 22px;
+  align-items: center;
+}
+.account-sidebar .outline-view .heading .name,
+.account-sidebar .outline-view .heading .text {
+  height: auto;
+  min-height: 22px;
+  line-height: 22px;
+  padding-bottom: 2px;
+}
